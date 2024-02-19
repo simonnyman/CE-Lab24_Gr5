@@ -7,7 +7,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
 # Define GPIO to use on Pi
-GPIO_TRIGECHO = 15
+GPIO_TRIGECHO = 18
 
 print ("Ultrasonic Measurement")
 
