@@ -24,16 +24,15 @@ from geometry_msgs.msg import Twist
 import time # time
 
 LINEAR_VEL = 0.20 # max vel
-RELATIVE_VEL = LINEAR_VEL / 100
-LIDAR_ERROR = 0.05
-COLLISION_DISTANCE = LIDAR_ERROR
+RELATIVE_LIN_VEL = LINEAR_VEL / 100 # for easier adjustment
 
-SAFE_STOP_DISTANCE = LIDAR_ERROR + 0.05
+ANGULAR_VEL = 2.50 # max angular vel
+RELATIVE_ANG_VEL = ANGULAR_VEL / 100 # for easier adjustment
+
+LIDAR_ERROR = 0.05
 
 SOFT_TURN_DISTANCE = LIDAR_ERROR + 0.44
-MEDIUM_TURN_DISTANCE = LIDAR_ERROR + 0.32
-HARD_TURN_DISTANCE = LIDAR_ERROR + 0.20
-#U_TURN = 1 #TBD
+HARD_TURN_DISTANCE = LIDAR_ERROR + 0.18
 
 class Obstacle():
     def __init__(self):
@@ -58,7 +57,6 @@ class Obstacle():
         else:
             left_lidar_samples_ranges = -(samples_view//2 + samples_view % 2)
             right_lidar_samples_ranges = samples_view//2
-            
             left_lidar_samples = scan.ranges[left_lidar_samples_ranges:]
             right_lidar_samples = scan.ranges[:right_lidar_samples_ranges]
             scan_filter.extend(left_lidar_samples + right_lidar_samples)
@@ -82,96 +80,54 @@ class Obstacle():
             lidar_distances = self.get_scan()
             min_distance = min(lidar_distances)
 
-            angle_intervals = 12
-            angle_range = len(lidar_distances)
+            # collisions = 0
+            # if min_distance <= LIDAR_ERROR + 0.05:
+            #     collisions += 1
+            #     print("COLLISION! Total collisions" + collisions)
 
-            for i in range(0, angle_intervals):
-                index1 = int((angle_range / angle_intervals) * i)
-                index2 = int((angle_range / angle_intervals) * (i+1))
-                if min_distance in lidar_distances[index1:index2]:
-                    print(str(index1) +"-" + str(index2) + " Distance of the obstacle: " + str(min_distance))
+            # avg_lin_speed = 0
+            # time_passed = 0
+            # avg_lin_speed += twist.linear.x
+            # time_passed += 1
+            # 
+            # print("Average linear speed: " + avg_lin_speed / time_passed)
+
+            # angle_intervals = 12
+            # angle_range = len(lidar_distances)
+
+            # for i in range(0, angle_intervals):
+            #     index1 = int((angle_range / angle_intervals) * i)
+            #     index2 = int((angle_range / angle_intervals) * (i+1))
+            #     if min_distance in lidar_distances[index1:index2]:
+            #         print(str(index1) +"-" + str(index2) + " Distance of the obstacle: " + str(min_distance))
             
             twist.linear.x = LINEAR_VEL
-            #if min_distance < U_TURN:
-            #    print('you spin me right round baby, right round')
             if min_distance < HARD_TURN_DISTANCE:
                 if turtlebot_moving:
 
                     if min_distance in lidar_distances[180:210]:
-                        twist.linear.x = RELATIVE_VEL * 45
-                        twist.angular.z = RELATIVE_VEL * -100*10
+                        twist.linear.x = RELATIVE_LIN_VEL * 45
+                        twist.angular.z = RELATIVE_ANG_VEL * -80
                         self._cmd_pub.publish(twist)
                         rospy.loginfo('Hard turn left')
                     elif min_distance in lidar_distances[210:240]:
-                        twist.linear.x = RELATIVE_VEL * 55
-                        twist.angular.z = RELATIVE_VEL * -95*10
-                        self._cmd_pub.publish(twist)
-                        rospy.loginfo('Hard turn left')
-                    elif min_distance in lidar_distances[240:270]:
-                        twist.linear.x = RELATIVE_VEL * 65
-                        twist.angular.z = RELATIVE_VEL * -90*10
+                        twist.linear.x = RELATIVE_LIN_VEL * 55
+                        twist.angular.z = RELATIVE_ANG_VEL * -76
                         self._cmd_pub.publish(twist)
                         rospy.loginfo('Hard turn left')
 
-                    elif min_distance in lidar_distances[90:120]:
-                        twist.linear.x = RELATIVE_VEL * 65
-                        twist.angular.z = RELATIVE_VEL * 90*10
-                        self._cmd_pub.publish(twist)
-                        rospy.loginfo('Hard turn right')
                     elif min_distance in lidar_distances[120:150]:
-                        twist.linear.x = RELATIVE_VEL * 55
-                        twist.angular.z = RELATIVE_VEL * 95*10
+                        twist.linear.x = RELATIVE_LIN_VEL * 55
+                        twist.angular.z = RELATIVE_ANG_VEL * 76
                         self._cmd_pub.publish(twist)
                         rospy.loginfo('Hard turn right')
                     elif min_distance in lidar_distances[150:180]:
-                        twist.linear.x = RELATIVE_VEL * 45
-                        twist.angular.z = RELATIVE_VEL * 100*10
+                        twist.linear.x = RELATIVE_LIN_VEL * 45
+                        twist.angular.z = RELATIVE_ANG_VEL * 80
                         self._cmd_pub.publish(twist)
                         rospy.loginfo('Hard turn right')
 
-                    elif min_distance in lidar_distances[60:90] or lidar_distances[30:60] or lidar_distances[0:30] or lidar_distances[330:360] or lidar_distances[300:330] or lidar_distances[270:300]:
-                        twist.linear.x = LINEAR_VEL
-                        twist.angular.z = 0.0
-                        self._cmd_pub.publish(twist)
-                        turtlebot_moving = True
-                        rospy.loginfo('Keep going, never look back')
-
-            elif min_distance < MEDIUM_TURN_DISTANCE:
-                if turtlebot_moving:
-
-                    if min_distance in lidar_distances[180:210]:
-                        twist.linear.x = RELATIVE_VEL * 80
-                        twist.angular.z = RELATIVE_VEL * -70*10
-                        self._cmd_pub.publish(twist)
-                        rospy.loginfo('Medium turn left')
-                    elif min_distance in lidar_distances[210:240]:
-                        twist.linear.x = RELATIVE_VEL * 85
-                        twist.angular.z = RELATIVE_VEL * -60*10
-                        self._cmd_pub.publish(twist)
-                        rospy.loginfo('Medium turn left')
-                    elif min_distance in lidar_distances[240:270]:
-                        twist.linear.x = RELATIVE_VEL * 90
-                        twist.angular.z = RELATIVE_VEL * -50*10
-                        self._cmd_pub.publish(twist)
-                        rospy.loginfo('Medium turn left')
-
-                    elif min_distance in lidar_distances[90:120]:
-                        twist.linear.x = RELATIVE_VEL * 90
-                        twist.angular.z = RELATIVE_VEL * 50*10
-                        self._cmd_pub.publish(twist)
-                        rospy.loginfo('Medium turn right')
-                    elif min_distance in lidar_distances[120:150]:
-                        twist.linear.x = RELATIVE_VEL * 85
-                        twist.angular.z = RELATIVE_VEL * 60*10
-                        self._cmd_pub.publish(twist)
-                        rospy.loginfo('Medium turn right')
-                    elif min_distance in lidar_distances[150:180]:
-                        twist.linear.x = RELATIVE_VEL * 80
-                        twist.angular.z = RELATIVE_VEL * 70*10
-                        self._cmd_pub.publish(twist)
-                        rospy.loginfo('Medium turn right')
-
-                    elif min_distance in lidar_distances[60:90] or lidar_distances[30:60] or lidar_distances[0:30] or lidar_distances[330:360] or lidar_distances[300:330] or lidar_distances[270:300]:
+                    elif min_distance in lidar_distances[60:90] or lidar_distances[30:60] or lidar_distances[0:30] or lidar_distances[330:360] or lidar_distances[300:330] or lidar_distances[270:300] or lidar_distances[240:270] or lidar_distances[90:120]:
                         twist.linear.x = LINEAR_VEL
                         twist.angular.z = 0.0
                         self._cmd_pub.publish(twist)
@@ -182,38 +138,28 @@ class Obstacle():
                 if turtlebot_moving:
 
                     if min_distance in lidar_distances[180:210]:
-                        twist.linear.x = RELATIVE_VEL * 90
-                        twist.angular.z = RELATIVE_VEL * -65*10
+                        twist.linear.x = RELATIVE_LIN_VEL * 90
+                        twist.angular.z = RELATIVE_ANG_VEL * -52
                         self._cmd_pub.publish(twist)
                         rospy.loginfo('Soft turn left')
                     elif min_distance in lidar_distances[210:240]:
-                        twist.linear.x = RELATIVE_VEL * 95
-                        twist.angular.z = RELATIVE_VEL * -55*10
-                        self._cmd_pub.publish(twist)
-                        rospy.loginfo('Soft turn left')
-                    elif min_distance in lidar_distances[240:270]:
-                        twist.linear.x = RELATIVE_VEL * 100
-                        twist.angular.z = RELATIVE_VEL * -45*10
+                        twist.linear.x = RELATIVE_LIN_VEL * 95
+                        twist.angular.z = RELATIVE_ANG_VEL * -44
                         self._cmd_pub.publish(twist)
                         rospy.loginfo('Soft turn left')
 
-                    elif min_distance in lidar_distances[90:120]:
-                        twist.linear.x = RELATIVE_VEL * 100
-                        twist.angular.z = RELATIVE_VEL * 45*10
-                        self._cmd_pub.publish(twist)
-                        rospy.loginfo('Soft turn right')
                     elif min_distance in lidar_distances[120:150]:
-                        twist.linear.x = RELATIVE_VEL * 95
-                        twist.angular.z = RELATIVE_VEL * 55*10
+                        twist.linear.x = RELATIVE_LIN_VEL * 95
+                        twist.angular.z = RELATIVE_ANG_VEL * 44
                         self._cmd_pub.publish(twist)
                         rospy.loginfo('Soft turn right')
                     elif min_distance in lidar_distances[150:180]:
-                        twist.linear.x = RELATIVE_VEL * 90
-                        twist.angular.z = RELATIVE_VEL * 65*10
+                        twist.linear.x = RELATIVE_LIN_VEL * 90
+                        twist.angular.z = RELATIVE_ANG_VEL * 52
                         self._cmd_pub.publish(twist)
                         rospy.loginfo('Soft turn right')
 
-                    elif min_distance in lidar_distances[60:90] or lidar_distances[30:60] or lidar_distances[0:30] or lidar_distances[330:360] or lidar_distances[300:330] or lidar_distances[270:300]:
+                    elif min_distance in lidar_distances[60:90] or lidar_distances[30:60] or lidar_distances[0:30] or lidar_distances[330:360] or lidar_distances[300:330] or lidar_distances[270:300] or lidar_distances[240:270] or lidar_distances[90:120]:
                         twist.linear.x = LINEAR_VEL
                         twist.angular.z = 0.0
                         self._cmd_pub.publish(twist)
