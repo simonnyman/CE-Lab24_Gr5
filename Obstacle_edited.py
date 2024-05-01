@@ -22,6 +22,9 @@ import math
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 import time # time
+import lights # RGB
+import led
+import ledr
 
 LINEAR_VEL = 0.20 # max vel
 RELATIVE_LIN_VEL = LINEAR_VEL / 100 # for easier adjustment
@@ -190,10 +193,17 @@ class Obstacle():
                 self._cmd_pub.publish(twist)
                 turtlebot_moving = True
 
+            if min_distance < COLLISION_DISTANCE:
+                ledr.collision
+                collision_counter =+ 1
+            if lights.getAndUpdateColour().color == "red":
+                rospy.loginfo("victim found!")
+                led.victim
+
+
             speed_updates+= 1
             speed_accumulation += twist.linear.x
             avg_linear_speed = speed_accumulation / speed_updates
-            rospy.loginfo("average linear speed %f", avg_linear_speed)
 
         rospy.loginfo("final average speed %f", avg_linear_speed)
         rospy.loginfo("final collison count %f", collision_counter)
