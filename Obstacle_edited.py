@@ -76,32 +76,17 @@ class Obstacle():
         twist = Twist()
         turtlebot_moving = True
 
+        avg_linear_speed = 0
+        speed_updates = 0
+        speed_accumulation = 0
+        collision_counter = 0
+        collision_delay = time.time()
         # make robot run for 120 seconds
         endtime = time.time() + 120
         while time.time() < endtime:
             lidar_distances = self.get_scan()
             min_distance = min(lidar_distances)
-
-            # collisions = 0
-            # if min_distance <= LIDAR_ERROR + 0.05:
-            #     collisions += 1
-            #     print("COLLISION! Total collisions" + collisions)
-
-            # avg_lin_speed = 0
-            # time_passed = 0
-            # avg_lin_speed += twist.linear.x
-            # time_passed += 1
-            # 
-            # print("Average linear speed: " + avg_lin_speed / time_passed)
-
-            # angle_intervals = 12
-            # angle_range = len(lidar_distances)
-
-            # for i in range(0, angle_intervals):
-            #     index1 = int((angle_range / angle_intervals) * i)
-            #     index2 = int((angle_range / angle_intervals) * (i+1))
-            #     if min_distance in lidar_distances[index1:index2]:
-            #         print(str(index1) +"-" + str(index2) + " Distance of the obstacle: " + str(min_distance))
+            
             
             twist.linear.x = LINEAR_VEL
             if min_distance < HARD_TURN_DISTANCE:
@@ -204,6 +189,14 @@ class Obstacle():
                 twist.angular.z = 0.0
                 self._cmd_pub.publish(twist)
                 turtlebot_moving = True
+
+            speed_updates+= 1
+            speed_accumulation += twist.linear.x
+            avg_linear_speed = speed_accumulation / speed_updates
+            rospy.loginfo("average linear speed %f", avg_linear_speed)
+
+        rospy.loginfo("final average speed %f", avg_linear_speed)
+        rospy.loginfo("final collison count %f", collision_counter)
 
 def main():
     rospy.init_node('turtlebot3_obstacle')
