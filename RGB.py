@@ -13,14 +13,12 @@ time.sleep(1)
 
 # print("Reading colour values and displaying them in a new window\n")
 
-
 def getAndUpdateColour():
     while True:
 	# Read the data from the sensor
         # ISL29125 address, 0x44
         # Reads the data from 0x44, address of ISL29125 from register 0x09 (low green) to 0x0E (high blue)
         data = bus.read_i2c_block_data(0x44, 0x09, 6)
-        color_current = ""
         # Convert the data to green, red and blue int values
         green = data[1] * 256 + data[0]
         red = data[3] * 256 + data[2]
@@ -42,8 +40,5 @@ def getAndUpdateColour():
             color_current = "Red"
         time.sleep(2) 
 
-
 for i in range (1000):
     getAndUpdateColour()
-
-

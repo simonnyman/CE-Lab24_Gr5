@@ -17,14 +17,15 @@
 
 # Authors: Gilbert #
 
+# NTS find de røde farver ignorer resten
 import rospy
 import math
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 import time # time
-import lights # RGB
-import led
-import ledr
+#from lights import getAndUpdateColour #RGB
+# import led
+# import ledr
 
 LINEAR_VEL = 0.20 # max vel
 RELATIVE_LIN_VEL = LINEAR_VEL / 100 # for easier adjustment
@@ -82,15 +83,24 @@ class Obstacle():
         avg_linear_speed = 0
         speed_updates = 0
         speed_accumulation = 0
+
         collision_counter = 0
-        collision_delay = time.time()
+
         # make robot run for 120 seconds
         endtime = time.time() + 120
         while time.time() < endtime:
             lidar_distances = self.get_scan()
             min_distance = min(lidar_distances)
+
+            speed_updates = speed_updates + 1
+            speed_accumulation += twist.linear.x
+            avg_linear_speed = speed_accumulation / speed_updates
+
+            if min_distance < COLLISION_DISTANCE:
+                collision_counter = collision_counter + 1
+                rospy.loginfo("Collison count %f", collision_counter)
             
-            
+
             twist.linear.x = LINEAR_VEL
             if min_distance < HARD_TURN_DISTANCE:
                 if turtlebot_moving:
@@ -192,18 +202,6 @@ class Obstacle():
                 twist.angular.z = 0.0
                 self._cmd_pub.publish(twist)
                 turtlebot_moving = True
-
-            if min_distance < COLLISION_DISTANCE:
-                ledr.collision
-                collision_counter =+ 1
-            if lights.getAndUpdateColour().color == "red":
-                rospy.loginfo("victim found!")
-                led.victim
-
-
-            speed_updates+= 1
-            speed_accumulation += twist.linear.x
-            avg_linear_speed = speed_accumulation / speed_updates
 
         rospy.loginfo("final average speed %f", avg_linear_speed)
         rospy.loginfo("final collison count %f", collision_counter)
