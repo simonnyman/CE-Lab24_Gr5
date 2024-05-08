@@ -31,7 +31,6 @@ GPIO.setup(18, GPIO.OUT, initial=GPIO.LOW)   # Set pin 18 to be an output pin an
 
 # Get I2C bus
 bus = smbus.SMBus(1)
-
 # ISL29125 address, 0x44(68)
 # Select configuation-1register, 0x01(01)
 # 0x0D(13) Operation: RGB, Range: 360 lux, Res: 16 Bits
@@ -88,33 +87,20 @@ class Obstacle():
 
     def collision(self): # Run forever
         GPIO.output(18, GPIO.HIGH) # Turn on
-        time.sleep(3)                  # Sleep for 1 second
         GPIO.output(18, GPIO.LOW)  # Turn off
 
-    def getAndUpdateColour(self):
-        while True:
-        # Read the data from the sensor
-            # ISL29125 address, 0x44
-            # Reads the data from 0x44, address of ISL29125 from register 0x09 (low green) to 0x0E (high blue)
-            data = bus.read_i2c_block_data(0x44, 0x09, 6)
-            # Convert the data to green, red and blue int values
-            green = data[1] * 256 + data[0]
-            red = data[3] * 256 + data[2]
-            blue = data[5] * 256 + data[4]
-            blue=blue*1.5 # Compensates for the low blue readings
-            
-            # Output data to the console RGB values
-            print("RGB(%d %d %d)" % (red, green, blue))
 
-            # Display the most prominent color
-            if (red > green and red > blue and red - blue > 1000 and red-green > 1000):
-                print("Red")
-                self.collision()
-                time.sleep(3) 
-            #elif (blue > red and blue > green and blue-green > 1000 and blue-red > 1000):
-                #print("Blue")
-            #elif (green > red and green > blue and green-blue > 1000 and green-red > 1000):
-                #print("Green")
+    def getAndUpdateColour(self):
+    # Read the data from the sensor
+        # ISL29125 address, 0x44
+        # Reads the data from 0x44, address of ISL29125 from register 0x09 (low green) to 0x0E (high blue)
+        data = bus.read_i2c_block_data(0x44, 0x09, 6)
+        # Convert the data to green, red and blue int values
+        green = data[1] * 256 + data[0]
+        red = data[3] * 256 + data[2]
+        blue = data[5] * 256 + data[4]
+        blue=blue*1.5 # Compensates for the low blue readings
+        return red, green, blue
 
     def obstacle(self):
         twist = Twist()
@@ -125,7 +111,9 @@ class Obstacle():
         speed_accumulation = 0
 
         collision_counter = 0
+        victim_counter = 0
         collision_delay = time.time()
+        led_delay = time.time()
 
         # make robot run for 120 seconds
         endtime = time.time() + 120
@@ -137,7 +125,15 @@ class Obstacle():
             speed_accumulation += twist.linear.x
             avg_linear_speed = speed_accumulation / speed_updates
 
-            self.getAndUpdateColour()
+            red, green, blue = self.getAndUpdateColour()
+
+            if red > green and red > blue and red - blue > 1000 and red-green > 1000 and led_delay <= time.time():
+                GPIO.output(18, GPIO.HIGH) # Turn on
+                print("Victim")
+                led_delay = time.time() + 3
+                victim_counter += 1
+            else:
+                GPIO.output(18, GPIO.LOW)
 
             twist.linear.x = LINEAR_VEL
             if turtlebot_moving:
@@ -218,8 +214,9 @@ class Obstacle():
                 collision_delay = time.time()+5
                 rospy.loginfo("Collison count %f", collision_counter)
 
-        rospy.loginfo("final average speed %f", avg_linear_speed)
-        rospy.loginfo("final collison count %f", collision_counter)
+        rospy.loginfo("final average speed: %f", avg_linear_speed)
+        rospy.loginfo("final collison count: %f", collision_counter)
+        rospy.loginfo("final victim count: %f", victim_counter)
 
 def main():
     rospy.init_node('turtlebot3_obstacle')
