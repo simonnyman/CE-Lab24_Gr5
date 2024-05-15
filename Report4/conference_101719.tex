@@ -47,11 +47,15 @@ The LiDAR used is the LDS-01 version with a range of 120 mm to 3500 mm \cite{b3}
 
 \subsubsection{Network Configuration}
 As mentioned, we wanted the robot to be able to move as freely as possible, meaning that connecting it to our machine via an ethernet cable was not the way to go.
-Therefore, we established a wireless connection to the robot by changing the network configuration on the pi. We used the following command:
-
+Therefore, we established a wireless connection to the robot by changing the network configuration on the sd card, making it automatically connect to the IP-address of our machine.
+This allowed for easy connection to the robot once a mobile hotspot was opened, as the robot was automatically allocated an IP-address.
+With this configured, the robot would subscribe to our machine on which the required ROS environments (these will be specified in the nect section) would publish actuation data to the motors of the robot, enabling wireless navigation.
 
 \subsubsection{ROS}
 
+The ROS operating system proved to be very useful in regards to this project, as it provided a very useful framework for our specific problem.
+The three main bits used were topics, messages, and nodes (rostopic, rosmsg, rosnode). These are all integral parts of the ROS framework, as each provides a unique functionality in abstracting the navigation.
+Nodes are responsible for performing computations and communicate internally through topics.
 
 \section{Methodology and Design}
 To make the 
