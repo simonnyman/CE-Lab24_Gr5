@@ -56,7 +56,9 @@ With this configured, the robot would subscribe to our machine on which the requ
 
 The ROS operating system proved to be very useful in regards to this project, as it provided a very useful framework for our specific problem.
 The three main bits used were topics, messages, and nodes (rostopic, rosmsg, rosnode). These are all integral parts of the ROS framework, as each provides a unique functionality in abstracting the navigation.
-Nodes are responsible for performing computations and communicate internally through topics.
+Nodes are responsible for performing computations and communicate internally through topics, while messages are used for communicating with the external sensors
+
+In our case, we had three nodes running. One running roscore, a 
 
 \section{Methodology and Design}
 Throughout the project we have been using the trial and error approach, which allowed for an efficent overall workflow.
