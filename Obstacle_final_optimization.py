@@ -29,7 +29,7 @@ GPIO.setwarnings(False)    # Ignore warning for now
 GPIO.setmode(GPIO.BOARD)   # Use physical pin numbering
 GPIO.setup(18, GPIO.OUT, initial=GPIO.LOW)   # Set pin 18 to be an output pin and set initial value to low (off)
 GPIO.setup(16, GPIO.OUT, initial=GPIO.LOW)   # Set pin 16 to be an output pin and set initial value to low (off)
-GPIO.setup(26, GPIO.OUT, initial=GPIO.HIGH)   # Set pin 26 to be an output pin and set initial value to high (on)
+GPIO.setup(37, GPIO.OUT, initial=GPIO.HIGH)   # Set pin 26 to be an output pin and set initial value to high (on)
 
 
 # Get I2C bus
@@ -46,12 +46,10 @@ ANGULAR_VEL = 2.50 # max angular vel
 RELATIVE_ANG_VEL = ANGULAR_VEL / 100 # for easier adjustment
 
 LIDAR_ERROR = 0.05
-COLLISION_DISTANCE = 0.06 + LIDAR_ERROR
+COLLISION_DISTANCE = 0.05 + LIDAR_ERROR
 
-# SOFT_TURN_DISTANCE = LIDAR_ERROR + 0.47
-# MEDIUM_TURN_DISTANCE = LIDAR_ERROR + 0.35
-MIX_TURN_DISTANCE = LIDAR_ERROR + 0.425
-HARD_TURN_DISTANCE = LIDAR_ERROR + 0.23
+MIX_TURN_DISTANCE = LIDAR_ERROR + 0.30
+HARD_TURN_DISTANCE = LIDAR_ERROR + 0.22
 
 class Obstacle():
     def __init__(self):
@@ -126,6 +124,11 @@ class Obstacle():
 
             red, green, blue = self.getAndUpdateColour()
 
+            if turtlebot_moving == True:
+                GPIO.output(37, GPIO.HIGH) # Turn on
+            else:
+                GPIO.output(37, GPIO.LOW) # Turn on
+
             if red > green and red > blue and red - blue > 1000 and red - green > 1000 and led_delay <= time.time():
                 GPIO.output(18, GPIO.HIGH) # Turn on
                 victim_counter += 1
@@ -141,32 +144,32 @@ class Obstacle():
                         twist.linear.x = RELATIVE_LIN_VEL * 20
                         twist.angular.z = RELATIVE_ANG_VEL * -100
                     elif min_distance < MIX_TURN_DISTANCE:
-                        twist.linear.x = RELATIVE_LIN_VEL * 60
-                        twist.angular.z = RELATIVE_ANG_VEL * -100
+                        twist.linear.x = RELATIVE_LIN_VEL * 100
+                        twist.angular.z = RELATIVE_ANG_VEL * -60
 
                 elif min_distance in lidar_distances[155:180]:
                     if min_distance < HARD_TURN_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 20
                         twist.angular.z = RELATIVE_ANG_VEL * 100
                     elif min_distance < MIX_TURN_DISTANCE:
-                        twist.linear.x = RELATIVE_LIN_VEL * 60
-                        twist.angular.z = RELATIVE_ANG_VEL * 100
+                        twist.linear.x = RELATIVE_LIN_VEL * 100
+                        twist.angular.z = RELATIVE_ANG_VEL * 60
 
                 elif min_distance in lidar_distances[205:230]:
                     if min_distance < HARD_TURN_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 40
                         twist.angular.z = RELATIVE_ANG_VEL * -80
                     elif min_distance < MIX_TURN_DISTANCE:
-                        twist.linear.x = RELATIVE_LIN_VEL * 80
-                        twist.angular.z = RELATIVE_ANG_VEL * -80
+                        twist.linear.x = RELATIVE_LIN_VEL * 100
+                        twist.angular.z = RELATIVE_ANG_VEL * -50
 
                 elif min_distance in lidar_distances[130:155]:
                     if min_distance < HARD_TURN_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 40
                         twist.angular.z = RELATIVE_ANG_VEL * 80
                     elif min_distance < MIX_TURN_DISTANCE:
-                        twist.linear.x = RELATIVE_LIN_VEL * 80
-                        twist.angular.z = RELATIVE_ANG_VEL * 80
+                        twist.linear.x = RELATIVE_LIN_VEL * 100
+                        twist.angular.z = RELATIVE_ANG_VEL * 50
 
                 elif min_distance in lidar_distances[230:255]:
                     if min_distance < HARD_TURN_DISTANCE:
@@ -174,7 +177,7 @@ class Obstacle():
                         twist.angular.z = RELATIVE_ANG_VEL * -60
                     elif min_distance < MIX_TURN_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 100
-                        twist.angular.z = RELATIVE_ANG_VEL * -60
+                        twist.angular.z = RELATIVE_ANG_VEL * -40
 
                 elif min_distance in lidar_distances[105:130]:
                     if min_distance < HARD_TURN_DISTANCE:
@@ -182,7 +185,7 @@ class Obstacle():
                         twist.angular.z = RELATIVE_ANG_VEL * 60
                     elif min_distance < MIX_TURN_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 100
-                        twist.angular.z = RELATIVE_ANG_VEL * 60
+                        twist.angular.z = RELATIVE_ANG_VEL * 40
 
                 elif min_distance in lidar_distances[255:360] or lidar_distances[0:105]:
                     twist.linear.x = LINEAR_VEL
@@ -198,9 +201,13 @@ class Obstacle():
             else:
                 GPIO.output(16, GPIO.LOW)
 
+
+        twist.linear.x = 0.0
+        twist.angular.z = 0.0
         rospy.loginfo("final average speed: %f", avg_linear_speed)
         rospy.loginfo("final collison count: %f", collision_counter)
         rospy.loginfo("final victim count: %f", victim_counter)
+        self._cmd_pub.publish(twist)
 
 def main():
     rospy.init_node('turtlebot3_obstacle')
