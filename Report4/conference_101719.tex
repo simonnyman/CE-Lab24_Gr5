@@ -4,6 +4,7 @@
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
+\usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
@@ -54,7 +55,16 @@ Therefore, we established a wireless connection to the robot by changing the net
 
 
 \section{Methodology and Design}
-To make the 
+Throughout the project we have been using the trial and error approach, which allowed for an efficent overall workflow.
+This approach works well, when having to build and optimize code for hardware, as we would need to see if and how the code is working.
+Furthermore, this approach works in great synergy with the See-Think-Act Cycle we use for the robot \hyperref[sec:STAC].
+We are able to edit the "see", "think" and "act" parts individually and get instant feedback by testing, simplifying both the building and optimization processes.
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=1.0\columnwidth]{STAC.png}}
+    \caption{Robots See-Think-Act Cycle.}
+    \label{sec:STAC}
+    \end{figure}
+
 
 \subsection{Navigation}
 implementation
@@ -68,36 +78,6 @@ implementation
 
 \section{Discussion}
 
-\subsection{Figures and Tables}
-\paragraph{Positioning Figures and Tables} Place figures and tables at the top and 
-bottom of columns. Avoid placing them in the middle of columns. Large 
-figures and tables may span across both columns. Figure captions should be 
-below the figures; table heads should appear above the tables. Insert 
-figures and tables after they are cited in the text. Use the abbreviation 
-``Fig.~\ref{fig}'', even at the beginning of a sentence.
-
-\begin{table}[htbp]
-\caption{Table Type Styles}
-\begin{center}
-\begin{tabular}{|c|c|c|c|}
-\hline
-\textbf{Table}&\multicolumn{3}{|c|}{\textbf{Table Column Head}} \\
-\cline{2-4} 
-\textbf{Head} & \textbf{\textit{Table column subhead}}& \textbf{\textit{Subhead}}& \textbf{\textit{Subhead}} \\
-\hline
-copy& More table copy$^{\mathrm{a}}$& &  \\
-\hline
-\multicolumn{4}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
-\end{tabular}
-\label{tab1}
-\end{center}
-\end{table}
-
-\begin{figure}[htbp]
-\centerline{\includegraphics{fig1.png}}
-\caption{Example of a figure caption.}
-\label{fig}
-\end{figure}
 
 \begin{thebibliography}{00}
 \bibitem{b1} 'Turtlebot3 features', accessed 15 May 2024, available at: https://emanual.robotis.com/docs/en/platform/turtlebot3/features/
