@@ -48,8 +48,8 @@ RELATIVE_ANG_VEL = ANGULAR_VEL / 100 # for easier adjustment
 LIDAR_ERROR = 0.05
 COLLISION_DISTANCE = 0.05 + LIDAR_ERROR
 
-MIX_TURN_DISTANCE = LIDAR_ERROR + 0.30
-HARD_TURN_DISTANCE = LIDAR_ERROR + 0.22
+MEDIUM_DISTANCE = LIDAR_ERROR + 0.30
+CLOSE_DISTANCE = LIDAR_ERROR + 0.22
 
 class Obstacle():
     def __init__(self):
@@ -140,50 +140,50 @@ class Obstacle():
             twist.linear.x = LINEAR_VEL
             if turtlebot_moving:
                 if min_distance in lidar_distances[180:205]:
-                    if min_distance < HARD_TURN_DISTANCE:
+                    if min_distance < CLOSE_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 20
                         twist.angular.z = RELATIVE_ANG_VEL * -100
-                    elif min_distance < MIX_TURN_DISTANCE:
+                    elif min_distance < MEDIUM_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 100
                         twist.angular.z = RELATIVE_ANG_VEL * -60
 
                 elif min_distance in lidar_distances[155:180]:
-                    if min_distance < HARD_TURN_DISTANCE:
+                    if min_distance < CLOSE_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 20
                         twist.angular.z = RELATIVE_ANG_VEL * 100
-                    elif min_distance < MIX_TURN_DISTANCE:
+                    elif min_distance < MEDIUM_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 100
                         twist.angular.z = RELATIVE_ANG_VEL * 60
 
                 elif min_distance in lidar_distances[205:230]:
-                    if min_distance < HARD_TURN_DISTANCE:
+                    if min_distance < CLOSE_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 40
                         twist.angular.z = RELATIVE_ANG_VEL * -80
-                    elif min_distance < MIX_TURN_DISTANCE:
+                    elif min_distance < MEDIUM_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 100
                         twist.angular.z = RELATIVE_ANG_VEL * -50
 
                 elif min_distance in lidar_distances[130:155]:
-                    if min_distance < HARD_TURN_DISTANCE:
+                    if min_distance < CLOSE_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 40
                         twist.angular.z = RELATIVE_ANG_VEL * 80
-                    elif min_distance < MIX_TURN_DISTANCE:
+                    elif min_distance < MEDIUM_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 100
                         twist.angular.z = RELATIVE_ANG_VEL * 50
 
                 elif min_distance in lidar_distances[230:255]:
-                    if min_distance < HARD_TURN_DISTANCE:
+                    if min_distance < CLOSE_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 60
                         twist.angular.z = RELATIVE_ANG_VEL * -60
-                    elif min_distance < MIX_TURN_DISTANCE:
+                    elif min_distance < MEDIUM_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 100
                         twist.angular.z = RELATIVE_ANG_VEL * -40
 
                 elif min_distance in lidar_distances[105:130]:
-                    if min_distance < HARD_TURN_DISTANCE:
+                    if min_distance < CLOSE_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 60
                         twist.angular.z = RELATIVE_ANG_VEL * 60
-                    elif min_distance < MIX_TURN_DISTANCE:
+                    elif min_distance < MEDIUM_DISTANCE:
                         twist.linear.x = RELATIVE_LIN_VEL * 100
                         twist.angular.z = RELATIVE_ANG_VEL * 40
 
