@@ -127,9 +127,37 @@ With this configured, we additionally addded a few centimeters to each reading d
     \end{figure}
 implementation
 \subsection{RGB}
-implementation
+As the point of the robot was a Search and Rescue, we needed a way to detect when a victim was found, which was done by the aforementioned RGB sensor, which in this case was represented by red spots on the floor.
+With this in mind, we placed the RGB sensor as close to the ground as possible in order to avoid as much light disturbance as possible.
+Additionally, we also connected a white LED and placed it directly next to the RGB sensor as we experienced that it had some trouble distinguishing between colors if not properly lit.
+The RGB was connected to the Raspberry Pi using four pins, two of these being the SDA (Serial Data Line) and SCL (Serial Clock Line)\cite{b4}. The SDA is the pin resposible for transfering raw data from the sensor to the Pi, where it is interpreted processed in order to extract the red, green, and blue values.
+The SCL is simply a clock, which synchronizes data transfers over the I2C bus.
+
+Furthermore, the sensor was connected to a GPIO pin, which would provide power to the RGB when the code was executed, and the fourth pin simply ground.
+After connecting the RGB properly, we were able to read the different values at the clock rate provided by the SCL.
+Since the victims were represented by red dots, we wrote our code in such a way that it would find a victim each time the red readings were above a certain threshold.
+
+However, due to unavoidable uncertainties in measurement, we would have to manually descale the blue readings by a certain factor as these seemed to consistently be a bit higher than expected.
+This was done by simply isolating the blue data and multiplying it by a factor we found fitting.
+Eventually, the condition for finding a victim was as shown in Fig. 9.
+If all these factors were present, an LED would light up and our victim counter would be incremented by 1.
+We did end up adding a short delay to the detection as the sensor would otherwise be able to detect multiple victims from a single red spot, courtesy of the high clock speed.
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/rgbpseudo.png}}
+    \caption{pseudo code showcasing the RGB logic}
+    \label{sec:rgb}
+    \end{figure}
+
 \subsection{LED}
-implementation
+As mentioned in the RGB section, we had an LED light up each time a victim was found. This was done by simlpy connecting it to a different GPIO than the RGB and then having it light up whenever the victim conditions were met.
+It would light up for a set amount of time and then turn off again afterwards.
+
+The same thing was done for our collision counter, as this was also signified by an LED, only in a different color.
+This would light up whenever the robot received a reading from the LiDAR below a certain threshold, corresponding to the length of the robot.
+Again, the LED would light up for a short amount of time while also incrementing the variable responsible for counting the total amount of collisions during a run.
+This detection was implemented completely independent from the other navigation code, resulting in us being able to detect a collision regardless of what stage of navigation the robot was currently in.
+
 \section{Experimentation and Testing}
 
 \section{Conclusion}
@@ -148,6 +176,7 @@ Actually did the entire thing.
 \bibitem{b1} 'Turtlebot3 features', accessed 15 May 2024, available at: https://emanual.robotis.com/docs/en/platform/turtlebot3/features/
 \bibitem{b2} 'Renesas RGB-sensor ISL29125 datasheet', accessed 15 May 2024, available at: https://www.alldatasheet.com/datasheet-pdf/pdf/1045936/RENESAS/ISL29125.html
 \bibitem{b3} 'LDS-01 overview', accessed 15 May 2024, available at: https://www.robot-advance.com/EN/art-360-laser-distance-sensor-lds-01-2352.htm
+\bibitem{b4} 'Using the I2C Bus', accessed 17 May 2024, available at: https://www.robot-electronics.co.uk/i2c-tutorial
 \end{thebibliography}
 
 \end{document}
