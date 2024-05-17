@@ -70,7 +70,7 @@ This approach works well, when having to build and optimize code for hardware, a
 Furthermore, this approach works in great synergy with the See-Think-Act Cycle we use for the robot, see \href{sec:STAC}{Fig. 1}.
 We are able to edit the "see", "think" and "act" parts individually and get instant feedback by testing, as this approach to navigation is very straight forward to reason about, simplifying both the building and optimization processes.
 \begin{figure}[htbp]
-    \centerline{\includegraphics[width=1.0\columnwidth]{STAC.png}}
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/STAC.png}}
     \caption{Robots See-Think-Act Cycle.}
     \label{sec:STAC}
     \end{figure}
@@ -88,7 +88,7 @@ In the case that an angle gave readings very close to 0, it would set this to 1 
 We had a third case, which checked whether the reading was indeed a number as it should, and would otherwise set it to 0 in which case it would be ignored as described.
 With this configured, we additionally addded a few centimeters to each reading due to the innate imprecision of the LiDAR, which will be apparent later on.
 \begin{figure}[htbp]
-    \centerline{\includegraphics[width=0.6\columnwidth\hspace{-1.3cm}]{LiDARhvid.png}}
+    \centerline{\includegraphics[width=0.6\columnwidth\hspace{-1.3cm}]{Pictures/LiDARhvid.png}}
     \caption{Ignoring the dead LiDAR angles.}
     \label{sec:lidar}
     \end{figure}
@@ -96,32 +96,32 @@ With this configured, we additionally addded a few centimeters to each reading d
 
 \subsection{Navigation}
 \begin{figure}[htbp]
-    \centerline{\includegraphics[width=0.6\columnwidth\hspace{-1.3cm}]{Pseudo.png}}
+    \centerline{\includegraphics[width=0.6\columnwidth\hspace{-1.3cm}]{Pictures/Pseudo.png}}
     \caption{.}
     \label{sec:pseudo}
     \end{figure}
 \begin{figure}[htbp]
-    \centerline{\includegraphics[width=0.9\columnwidth]{LiDAR Angels.png}}
+    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/LiDAR Angels.png}}
     \caption{.}
     \label{sec:angles}
     \end{figure}
 \begin{figure}[htbp]
-    \centerline{\includegraphics[width=0.9\columnwidth]{LiDAR Distances.png}}
+    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/LiDAR Distances.png}}
     \caption{.}
     \label{sec:distances}
     \end{figure}
 \begin{figure}[htbp]
-    \centerline{\includegraphics[width=0.9\columnwidth]{Medium Distance Aviodance.png}}
+    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Medium Distance Aviodance.png}}
     \caption{.}
     \label{sec:medium aviodance}
     \end{figure}
 \begin{figure}[htbp]
-    \centerline{\includegraphics[width=0.9\columnwidth]{Close Distance Avoidance.png}}
+    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Close Distance Avoidance.png}}
     \caption{.}
     \label{sec:close aviodance}
     \end{figure}
 \begin{figure}[htbp]
-    \centerline{\includegraphics[width=0.9\columnwidth]{Flowchart.png}}
+    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Flowchart.png}}
     \caption{.}
     \label{sec:flowchart}
     \end{figure}
