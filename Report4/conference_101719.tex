@@ -93,39 +93,56 @@ With this configured, we additionally addded a few centimeters to each reading d
     \label{sec:lidar}
     \end{figure}
 
-
 \subsection{Navigation}
-\begin{figure}[htbp]
-    \centerline{\includegraphics[width=0.6\columnwidth\hspace{-1.3cm}]{Pictures/Pseudo.png}}
-    \caption{.}
-    \label{sec:pseudo}
-    \end{figure}
+The logic for the navigation was developed to excel on our performance criteria of limiting collision, while achieveing a high speed, which in turn will allow the robot to move fast through the obstacle course, thereby detecting as many "victims" as possible.
+Our navigation is based on an object detecting strategy, were we made the robots actions dependent on where the closest object was located.
+To distinguish between possible locations of an object, we had to split the LiDAR readings into both an angular interval and a distance within that interval.
+For our final iteration of the navigation program, we split the angular intervals into 6 cones, each spanning 25 deegrees in front of the robot as illustrated in \href{sec:angles}{Fig. 3}. 
+As the navigation is based around the concept of avoiding for objects obstructing the path of the robot, we "ignored" the 180 deegrees behind the robot
+We "ignored" the backwards facing 180 deegrees, by making the robot move forward in full speed.
+The same concept is applied to two remaining 15 deegree cones of the forward facing 180 deegrees, which enables the robot to run parralel to an object without turning away.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/LiDAR Angels.png}}
     \caption{.}
     \label{sec:angles}
     \end{figure}
+When the the angle interval of the nearest object is registered, the navigation program would then evaluate the distance to the obstacle.
+If the obstacle is registered to be within 30 centimeters, the robot would make a slight preventive turn while keeping the linear speed high.
+If the object is within 22 centimeters, the robot would turn hard while lowering the linear speed drasticly.
+In addition if an obstacle should be registered within 10 centimeters of the LiDAR a collision would be registered.
+An illustration of the distances within the cones is provided in \href{sec:distances}{Fig. 5}.
+The intervals and distances were both determined through our continous testing process, which we elaborate further on in the \textit{Experimentation and Testing} section.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/LiDAR Distances.png}}
     \caption{.}
     \label{sec:distances}
     \end{figure}
+
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Medium Distance Aviodance.png}}
     \caption{.}
     \label{sec:medium aviodance}
     \end{figure}
+
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Close Distance Avoidance.png}}
     \caption{.}
     \label{sec:close aviodance}
     \end{figure}
 \begin{figure}[htbp]
-    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Flowchart.png}}
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Flowchart.png}}
     \caption{.}
     \label{sec:flowchart}
     \end{figure}
+
+
 implementation
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=0.6\columnwidth\hspace{-1.3cm}]{Pictures/Pseudo.png}}
+    \caption{.}
+    \label{sec:pseudo}
+    \end{figure}
+
 \subsection{RGB}
 As the point of the robot was a Search and Rescue, we needed a way to detect when a victim was found, which was done by the aforementioned RGB sensor, which in this case was represented by red spots on the floor.
 With this in mind, we placed the RGB sensor as close to the ground as possible in order to avoid as much light disturbance as possible.
