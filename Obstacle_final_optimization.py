@@ -127,7 +127,7 @@ class Obstacle():
             if turtlebot_moving == True:
                 GPIO.output(37, GPIO.HIGH) # Turn on
             else:
-                GPIO.output(37, GPIO.LOW) # Turn on
+                GPIO.output(37, GPIO.LOW) # Turn off
 
             if red > green and red > blue and red - blue > 1000 and red - green > 1000 and led_delay <= time.time():
                 GPIO.output(18, GPIO.HIGH) # Turn on
