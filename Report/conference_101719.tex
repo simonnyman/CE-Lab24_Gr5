@@ -34,7 +34,14 @@ Studentnumber: 202307244\\}
 The goal for this project was to design a down-scaled version of a Search And Rescue (SAR) robot, used to rescue victims in the aftermaths of natural disasters.
 The robot will imitate a real world scenario by, autonomously navigating an obstacle course and distinguishing between different color markings, representing potential victims. To achieved this we use the TurtleBot3 Burger Robot equipped with different sensors.
 All the software will be implmented in python using the Robot Operating Software framework (ROS). For the sensors we will be using a LiDAR sensor capable of measuring distances in a 360 degree view, and an RGB-sensor which differentiates between red, green and blue colors. 
-The performance will be assessed based on three factors: Average speed, number of collisions and "victims" found.
+The overall structure of the project was split into four parts:
+\begin{itemize}
+    \item Understanding the basic concepts of robotics programming, including the see-think- act cycle \href{sec:STAC}{Fig. 1}. Reading and processing data from a RGB and range sensor.
+    \item Setting up a virtual machine, and working with ROS through a beginner's tutorial.
+    \item Developing the robot navigation program, and working with ROS on the Raspberry PI .
+    \item Optimizing the robot navigation and integrating code components for the RGB and LEDs
+\end{itemize} 
+Finally the performance of the robot would be assessed based on three factors: Average speed, number of collisions and "victims" found.
 
 \section{Specifications}
 Our Search and Rescue implementation used a turtlebot3 robot, specifically the burger configuration with dimensions 138mm x 178mm x 192mm (L $\times$ W $\times$ H)\cite{b1}.
@@ -98,48 +105,58 @@ The logic for the navigation was developed to excel on our performance criteria 
 Our navigation is based on an object detecting strategy, were we made the robots actions dependent on where the closest object was located.
 To distinguish between possible locations of an object, we had to split the LiDAR readings into both an angular interval and a distance within that interval.
 For our final iteration of the navigation program, we split the angular intervals into 6 cones, each spanning 25 deegrees in front of the robot as illustrated in \href{sec:angles}{Fig. 3}. 
-As the navigation is based around the concept of avoiding for objects obstructing the path of the robot, we "ignored" the 180 deegrees behind the robot
-We "ignored" the backwards facing 180 deegrees, by making the robot move forward in full speed.
-The same concept is applied to two remaining 15 deegree cones of the forward facing 180 deegrees, which enables the robot to run parralel to an object without turning away.
+As the navigation is based around the concept of avoiding objects obstructing the path of the robot, we "ignored" the 180 deegrees behind the robot, by making the robot move forward in full speed.
+The same concept is applied to the two remaining 15 deegree cones of the forward facing 180 deegrees, which enables the robot to run parralel to an object without turning away.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/LiDAR Angels.png}}
-    \caption{.}
+    \caption{LiDAR zones illustration. Please note that the angles of the cones are slightly distorted}
     \label{sec:angles}
     \end{figure}
+
 When the the angle interval of the nearest object is registered, the navigation program would then evaluate the distance to the obstacle.
 If the obstacle is registered to be within 30 centimeters, the robot would make a slight preventive turn while keeping the linear speed high.
 If the object is within 22 centimeters, the robot would turn hard while lowering the linear speed drasticly.
 In addition if an obstacle should be registered within 10 centimeters of the LiDAR a collision would be registered.
-An illustration of the distances within the cones is provided in \href{sec:distances}{Fig. 5}.
+An illustration of the distances within the cones is provided in \href{sec:distances}{Fig. 4}.
 The intervals and distances were both determined through our continous testing process, which we elaborate further on in the \textit{Experimentation and Testing} section.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/LiDAR Distances.png}}
-    \caption{.}
+    \caption{LiDAR distances illustration. Please note that the angle of the cones and distances are slightly distorted}
     \label{sec:distances}
     \end{figure}
 
+The thought behind this approach to our logic design, was to use the medium distance to locate objects early and then make the robot take preventive action.
+Locating the obstacles early allows the robot to make a series of smaller turns, where the linear speed is kept high. The concept is visualized in \href{sec:distances}{Fig. 5}
+The close distance was implemented to be used in situations where harder turns were needed to avoid a collision. A potential example could be a dead end, as illustrated in \href{sec:distances}{Fig. 6}
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Medium Distance Aviodance.png}}
-    \caption{.}
+    \caption{Illustration of the robot using the medium distance in different angle intervals to move fast through a potential obstacle course scenario.}
     \label{sec:medium aviodance}
     \end{figure}
-
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Close Distance Avoidance.png}}
-    \caption{.}
+    \caption{Illustration of a scenario where the robot would use the close distance.}
     \label{sec:close aviodance}
     \end{figure}
+The way we implemented this navigation logic can be illustarated by the flow chart in \href{sec:distances}{Fig. 7}. 
+First we would locate if there is an obstacle in our LiDAR zones, if not the robot would continoe moving forward.
+If an obstacle was detected, it would be evaluated in which cone, and thereafter at what distance.
+If the obstacle was in either of the center cones the robot, it would mean the obstacle is diretcly in the robots path meaning the robot will have to turn a lot.
+The robot will have to turn less if an obstacle was detected in the middle cones, and even less if in the outer cones.
+For the distance factor, an obstacle within the medium distance would result in maximum linear speed, but a close obstacle would mean a very significantly reduced linear speed.
+To simplify the angle of the obstacle relaive to the robot would be the primary factor in determining the angular speed (i.e how much the robot turns), so the closer an obstacle is to the current path of the robot, the more it will turn.
+In addition to that, the distance to said obstacle would be the primary factor in determining the linear speed (i.e how fast the robot moves forward), so the closer an obstacle is to the robot, the slower it will move to avoid collisions.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Flowchart.png}}
-    \caption{.}
+    \caption{Flowchart describing how the robot will act, depending on relative position of obstacle.}
     \label{sec:flowchart}
     \end{figure}
 
+For the conrete implmentation we would use a bunch of if- and else statements, ressembeling the pseudo code in \href{sec:distances}{Fig. 8}.
 
-implementation
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.6\columnwidth\hspace{-1.3cm}]{Pictures/Pseudo.png}}
-    \caption{.}
+    \caption{Pseudo navigation.}
     \label{sec:pseudo}
     \end{figure}
 
@@ -176,7 +193,7 @@ Again, the LED would light up for a short amount of time while also incrementing
 This detection was implemented completely independent from the other navigation code, resulting in us being able to detect a collision regardless of what stage of navigation the robot was currently in.
 
 \section{Experimentation and Testing}
-
+simplicity...
 \section{Conclusion}
 
 \section{Discussion}
@@ -204,12 +221,13 @@ Simon wrote and was responsible for the following sections:
 \end{itemize}
 
 Sections V and VI along with the Abstract were written in collaboration to achieve a coalescence of thoughts and conclusions.
-The same is true for the design of the figures used along with the gathering of information.
+The same is true for the design of the figures used, along with the gathering of information.
 \begin{thebibliography}{00}
 \bibitem{b1} 'Turtlebot3 features', accessed 15 May 2024, available at: https://emanual.robotis.com/docs/en/platform/turtlebot3/features/
 \bibitem{b2} 'Renesas RGB-sensor ISL29125 datasheet', accessed 15 May 2024, available at: https://www.alldatasheet.com/datasheet-pdf/pdf/1045936/RENESAS/ISL29125.html
 \bibitem{b3} 'LDS-01 overview', accessed 15 May 2024, available at: https://www.robot-advance.com/EN/art-360-laser-distance-sensor-lds-01-2352.htm
 \bibitem{b4} 'Using the I2C Bus', accessed 17 May 2024, available at: https://www.robot-electronics.co.uk/i2c-tutorial
+\bibitem{b5} 'GitHub repository', accessed ... May 2024, available at: ...
 \end{thebibliography}
 
 \end{document}
