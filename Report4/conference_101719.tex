@@ -28,19 +28,25 @@ Studentnumber: 202307244\\}
 \maketitle
 
 \begin{abstract}
+    This report documents the development of a Search and Rescue robot designed on a Turtlebot3 using the ROS framework along with several external software and hardware components.
+    Throughout the report, the specifics of these components will be introduced along with the thought process behind the implementation.
+
+    As the nature of the robot is Search and Rescue, the overall aim of the project is to find as many victims as possible while avoiding obstacles.
+    The main focus of ours was the development of the natigational software, which will be be explained in depth witht the use of figures and the like, all aiming to clarify and explain the thought process behind the algorithm as clearly as possible.
+    Genereally, we reached a fairly well working implementation, though with a few weaknesses and sources of error, which will be discussed in depth over the course of the paper.
 \end{abstract}
 
 \section{Introduction}
 The goal for this project was to design a down-scaled version of a Search And Rescue (SAR) robot, used to rescue victims in the aftermaths of natural disasters.
-The robot will imitate a real world scenario by, autonomously navigating an obstacle course and distinguishing between different color markings, representing potential victims. To achieved this we use the TurtleBot3 Burger Robot equipped with different sensors.
-All the software will be implmented in python using the Robot Operating Software framework (ROS). For the sensors we will be using a LiDAR sensor capable of measuring distances in a 360 degree view, and an RGB-sensor which differentiates between red, green and blue colors. 
+The robot will imitate a real world scenario by autonomously navigating an obstacle course and distinguishing between different color markings, representing potential victims. To achieve this we use the TurtleBot3 Burger Robot equipped with different sensors.
+All the software will be implemented in python using the Robot Operating Software framework (ROS). For the sensors we will be using a LiDAR sensor capable of measuring distances in a 360 degree view, and an RGB-sensor which differentiates between red, green and blue colors. 
 The performance will be assessed based on three factors: Average speed, number of collisions and "victims" found.
 
 \section{Specifications}
 Our Search and Rescue implementation used a turtlebot3 robot, specifically the burger configuration with dimensions 138mm x 178mm x 192mm (L $\times$ W $\times$ H)\cite{b1}.
 On the turtlebot3, a Raspberry Pi 3 model B+ and an Arduino are connected in order to process the incoming external signals from the various sensors.
 Furthermore, the robot has two motors attached, one for each wheel. From the specification it is evident that the robot has a maximal linear velocity of 0.22 m/s
-and a maximum rotational velocity of 2.84 rad/s. In order keep the robot as agile as possible with no wires attached, we used an 800 mA Li-Po battery and established a wireless connection, which will be specified further in a following section.
+and a maximum rotational velocity of 2.84 rad/s. In order keep the robot as agile as possible with no wires attached, we used an 800 mA Li-Po battery and established a wireless connection, which will be specified further in a later section.
 The specific RGB used is an ISL29125 low power, high sensitivity red, green and blue light sensor with SMBus compatibility\cite{b2}.
 The LiDAR used is the LDS-01 version with a range of 120 mm to 3500 mm, capable of doing full 360 degree scans. \cite{b3}
 
@@ -50,18 +56,18 @@ The LiDAR used is the LDS-01 version with a range of 120 mm to 3500 mm, capable 
 As mentioned, we wanted the robot to be able to move as freely as possible, meaning that connecting it to our machine via an ethernet cable was not the way to go.
 Therefore, we established a wireless connection to the robot by changing the network configuration on the sd card, making it automatically connect to the IP-address of our machine.
 This allowed for easy connection to the robot once a mobile hotspot was opened, as the robot was automatically allocated an IP-address.
-With this configured, the robot would subscribe to our machine on which the required ROS environments (these will be specified in the nect section) would publish actuation data to the motors of the robot, enabling wireless navigation.
+With this configured, the robot would subscribe to our machine on which the required ROS environments (these will be specified in the next section) would publish actuation data to the motors of the robot, enabling wireless navigation.
 
 \subsubsection{ROS}
 
-The ROS operating system proved to be very useful in regards to this project, as it provided a very useful framework for our specific problem.
+The ROS operating system proved to be very useful in regards to this project, as it provided a greatly practical and convenient framework for our specific problem.
 The three main parts used were topics, messages, and nodes (rostopic, rosmsg, rosnode). These are all integral parts of the ROS framework, as each provides a unique functionality in abstracting the navigation.
 Nodes are responsible for performing computations and communicate internally through topics, while messages are used for communicating with the external sensors.
 
 In our case, we had three nodes running. One running roscore, which encapsulates the entire framwork, allowing the other nodes to run in the ROS environment.
-The second node ran the basic functionality of the robot, such as managing the incoming sensor data and sending signals to the motors.
-The third node was running the navigation code that we wrote. These communicated by the subsribe/publish model to send data back and forth, in order to control the navigation of the robot.
-The nodes also contain debug information and allowed us to log the information we required for optimizing and reason about the relevant aspects of the code as we were testing it.
+The second node ran the basic functionality of the robot, such as managing the incoming sensor data and sending signals to the motors, while the third node was used to run our navigation code.
+These communicated by the subsribe/publish model to send data back and forth, in order to control the navigation of the robot.
+Another beneficial characteristic of the ROS nodes is that they also contain debug information and data. This allowed for logging the information required for optimizing and reasoning about the relevant aspects of the code as it was being tested.
 
 
 \section{Methodology and Design}
@@ -78,9 +84,11 @@ We are able to edit the "see", "think" and "act" parts individually and get inst
 \subsection{LiDAR}
 The use of LiDAR readings is an integral part of the design, as the entire navigation logic depends upon these.
 In our implementation, it had two use cases, one being the ability to read in which direction the nearest obstacle was present, if any, and the second being the ability to read the specific distance to said obstacle, which would determine what to do next.
-As the LiDAR provides a 360 degree scan, we first had to figure out which angles to use and how these were organized within the LiDAR.
-By firstly playing around with the angles, we figured out that they were organized in a way such that 0$^\circ$ was at the back of the robot, and then continued clockwise around the robot.
+
+As the LiDAR provides a 360 degree scan, we first had to figure out which angles to use and how these were organized within the data provided by the LiDAR.
+This was done by simply running a simple navigational algorithm on the robot several times until we figured out that they were organized in a way such that 0$^\circ$ was at the back of the robot, and then continued clockwise around the robot.
 This meant that the front 180$^\circ$ were located in the interval $[90:270]$. How this was used in our final implementation will be elaborated on in the \textit{Navigation} section.
+
 During initial testing of the LiDAR, we encountered a problem, as some angles seemed to not be working properly and would either give readings very close to 0, which resulted in the robot refusing to move, or infinitely large readings.
 To fix this, we wrote a loop within the LiDAR scan function, which would iterate through the values in the angles being read and, if any angles were suffering from either of these problems, would fix them, as seen in \href{sec:lidar}{Fig. 2}.
 If the value was infinitely large, it would set it to the max value of the LiDAR, which, as previously mentioned, is 3.5 meters.
@@ -144,21 +152,21 @@ implementation
     \end{figure}
 
 \subsection{RGB}
-As the point of the robot was a Search and Rescue, we needed a way to detect when a victim was found, which was done by the aforementioned RGB sensor, which in this case was represented by red spots on the floor.
-With this in mind, we placed the RGB sensor as close to the ground as possible in order to avoid as much light disturbance as possible.
+As the point of the robot was to Search and Rescue, we needed a way to detect when a victim was found, which was done by the aforementioned RGB sensor, as the victims were represented by red spots on the floor.
+With this in mind, we placed the RGB sensor as close to the ground as the robot allowed for, in order to avoid as much light disturbance as possible.
 Additionally, we also connected a white LED and placed it directly next to the RGB sensor as we experienced that it had some trouble distinguishing between colors if not properly lit.
-The RGB was connected to the Raspberry Pi using four pins, two of these being the SDA (Serial Data Line) and SCL (Serial Clock Line)\cite{b4}. The SDA is the pin resposible for transfering raw data from the sensor to the Pi, where it is interpreted processed in order to extract the red, green, and blue values.
+The RGB was connected to the Raspberry Pi using four pins, two of these being the SDA (Serial Data Line) and SCL (Serial Clock Line)\cite{b4}. The SDA is the pin resposible for transfering raw data from the sensor to the Pi, where it is interpreted and processed in order to extract the red, green, and blue values.
 The SCL is simply a clock, which synchronizes data transfers over the I2C bus.
 
-Furthermore, the sensor was connected to a GPIO pin, which would provide power to the RGB when the code was executed, and the fourth pin simply ground.
+Furthermore, the sensor was connected to a GPIO pin, which would provide power to the RGB when the code was executed with the fourth pin simply being ground.
 After connecting the RGB properly, we were able to read the different values at the clock rate provided by the SCL.
 Since the victims were represented by red dots, we wrote our code in such a way that it would find a victim each time the red readings were above a certain threshold.
 
-However, due to unavoidable uncertainties in measurement, we would have to manually descale the blue readings by a certain factor as these seemed to consistently be a bit higher than expected.
+However, due to unavoidable uncertainties in measurement, we would have to manually upscale the blue readings by a certain factor as these seemed to consistently be a bit lower than expected.
 This was done by simply isolating the blue data and multiplying it by a factor we found fitting.
 Eventually, the condition for finding a victim was as shown in Fig. 9.
-If all these factors were present, an LED would light up and our victim counter would be incremented by 1.
-We did end up adding a short delay to the detection as the sensor would otherwise be able to detect multiple victims from a single red spot, courtesy of the high clock speed.
+If all these factors were present, an LED would light up and our \textit{victim counter} variable would be incremented by 1.
+As the implementation was finished, a short delay was added to the detection funciton as the sensor would otherwise be able to detect multiple victims from a single red spot, courtesy of the high clock speed.
 
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/rgbpseudo.png}}
@@ -170,7 +178,7 @@ We did end up adding a short delay to the detection as the sensor would otherwis
 As mentioned in the RGB section, we had an LED light up each time a victim was found. This was done by simlpy connecting it to a different GPIO than the RGB and then having it light up whenever the victim conditions were met.
 It would light up for a set amount of time and then turn off again afterwards.
 
-The same thing was done for our collision counter, as this was also signified by an LED, only in a different color.
+The same thing was done for our \textit{collision counter} variable, as this was also signified by an LED, only in a different color.
 This would light up whenever the robot received a reading from the LiDAR below a certain threshold, corresponding to the length of the robot.
 Again, the LED would light up for a short amount of time while also incrementing the variable responsible for counting the total amount of collisions during a run.
 This detection was implemented completely independent from the other navigation code, resulting in us being able to detect a collision regardless of what stage of navigation the robot was currently in.
@@ -183,8 +191,8 @@ This detection was implemented completely independent from the other navigation 
 
 \section{Personal Contributions}
 Throughout the course, we generally worked in tandem in regards to the development and implementation of the robot.
-Whenever a new step had to be taken, we discussed it between the two of us and came up with a rough idea of how to approach the problem and afterwards would work together on the solution, whether it was our navigation software or the integration of a new sensor or other external part.
-When writing the report, the workload was divided in the follwing way:
+Whenever a new step had to be taken, we discussed it between the two of us and came up with a rough idea of how to approach the problem and would afterwards work together on the solution, whether it was our navigation software or the integration of a new sensor or other external part.
+During the writing of the report, the workload was divided in the follwing way:
 
 Jakob wrote and was responsible for the following sections:
 \begin{itemize}
