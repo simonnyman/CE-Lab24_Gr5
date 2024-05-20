@@ -49,6 +49,8 @@ The overall structure of the project was split into four parts:
 \end{itemize} 
 Finally the performance of the robot would be assessed based on three factors: Average speed, number of collisions and "victims" found.
 
+NTS: add Structure of report
+
 \section{Specifications}
 Our Search and Rescue implementation used a turtlebot3 robot, specifically the burger configuration with dimensions 138mm x 178mm x 192mm (L $\times$ W $\times$ H)\cite{b1}.
 On the turtlebot3, a Raspberry Pi 3 model B+ and an Arduino are connected in order to process the incoming external signals from the various sensors.
@@ -107,7 +109,7 @@ With this configured, we additionally addded a few centimeters to each reading d
     \end{figure}
 
 \subsection{Navigation}
-The logic for the navigation was developed to excel on our performance criteria of limiting collision, while achieveing a high speed, which in turn will allow the robot to move fast through the obstacle course, thereby detecting as many "victims" as possible.
+The logic for the navigation was developed to excel on our performance criteria of limiting collisions, while achieveing a high speed, which in turn will allow the robot to move fast through the obstacle course, thereby detecting as many "victims" as possible.
 Our navigation is based on an object detecting strategy, were we made the robots actions dependent on where the closest object was located.
 To distinguish between possible locations of an object, we had to split the LiDAR readings into both an angular interval and a distance within that interval.
 For our final iteration of the navigation program, we split the angular intervals into 6 cones, each spanning 25 deegrees in front of the robot as illustrated in \href{sec:angles}{Fig. 3}. 
@@ -118,13 +120,12 @@ The same concept is applied to the two remaining 15 deegree cones of the forward
     \caption{LiDAR zones illustration. Please note that the angles of the cones are slightly distorted}
     \label{sec:angles}
     \end{figure}
-
 When the the angle interval of the nearest object is registered, the navigation program would then evaluate the distance to the obstacle.
 If the obstacle is registered to be within 30 centimeters, the robot would make a slight preventive turn while keeping the linear speed high.
 If the object is within 22 centimeters, the robot would turn hard while lowering the linear speed drasticly.
 In addition if an obstacle should be registered within 10 centimeters of the LiDAR a collision would be registered.
 An illustration of the distances within the cones is provided in \href{sec:distances}{Fig. 4}.
-The intervals and distances were both determined through our continous testing process, which we elaborate further on in the \textit{Experimentation and Testing} section.
+The intervals and distances were both determined through our continuous testing process, which we elaborate further on in the \textit{Experimentation and Testing} section.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/LiDAR Distances.png}}
     \caption{LiDAR distances illustration. Please note that the angle of the cones and distances are slightly distorted}
@@ -132,8 +133,8 @@ The intervals and distances were both determined through our continous testing p
     \end{figure}
 
 The thought behind this approach to our logic design, was to use the medium distance to locate objects early and then make the robot take preventive action.
-Locating the obstacles early allows the robot to make a series of smaller turns, where the linear speed is kept high. The concept is visualized in \href{sec:distances}{Fig. 5}
-The close distance was implemented to be used in situations where harder turns were needed to avoid a collision. A potential example could be a dead end, as illustrated in \href{sec:distances}{Fig. 6}
+Locating the obstacles early allows the robot to make a series of smaller turns, where the linear speed is kept high. The concept is visualized in \href{sec:medium aviodance}{Fig. 5}.
+The close distance was implemented to be used in situations where harder turns were needed to avoid a collision. A potential example could be a dead end, as illustrated in \href{sec:close aviodance}{Fig. 6}.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Medium Distance Aviodance.png}}
     \caption{Illustration of the robot using the medium distance in different angle intervals to move fast through a potential obstacle course scenario.}
@@ -144,13 +145,15 @@ The close distance was implemented to be used in situations where harder turns w
     \caption{Illustration of a scenario where the robot would use the close distance.}
     \label{sec:close aviodance}
     \end{figure}
-The way we implemented this navigation logic can be illustarated by the flow chart in \href{sec:distances}{Fig. 7}. 
-First we would locate if there is an obstacle in our LiDAR zones, if not the robot would continoe moving forward.
+
+    The way we implemented this navigation logic is illustarated by the flow chart in \href{sec:flowchart}{Fig. 7}. 
+First we would locate if there is an obstacle in our LiDAR zones, if not the robot would continue moving forward.
 If an obstacle was detected, it would be evaluated in which cone, and thereafter at what distance.
 If the obstacle was in either of the center cones the robot, it would mean the obstacle is diretcly in the robots path meaning the robot will have to turn a lot.
 The robot will have to turn less if an obstacle was detected in the middle cones, and even less if in the outer cones.
 For the distance factor, an obstacle within the medium distance would result in maximum linear speed, but a close obstacle would mean a very significantly reduced linear speed.
-To simplify the angle of the obstacle relaive to the robot would be the primary factor in determining the angular speed (i.e how much the robot turns), so the closer an obstacle is to the current path of the robot, the more it will turn.
+
+To summarize the angle of the obstacle relative to the robot would be the primary factor in determining the angular speed (i.e how much the robot turns), so the closer an obstacle is to the current path of the robot, the more it will turn.
 In addition to that, the distance to said obstacle would be the primary factor in determining the linear speed (i.e how fast the robot moves forward), so the closer an obstacle is to the robot, the slower it will move to avoid collisions.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Flowchart.png}}
@@ -158,13 +161,22 @@ In addition to that, the distance to said obstacle would be the primary factor i
     \label{sec:flowchart}
     \end{figure}
 
-For the conrete implmentation we would use a bunch of if- and else statements, ressembeling the pseudo code in \href{sec:distances}{Fig. 8}....
+For the conrete implmentation we would use a bunch of if- and else statements, ressembeling the pseudo code in \href{sec:pseudo}{Fig. 8}.
+The first set of if statements would determine in which angle the closest obstacle was present.
+Thereafter some nested if statements would determine how far the object was from the robot.
+We would then through our testing find the best combination of linear and angular speed, to achieve the desired action.
+For example in \href{sec:navigation}{Fig. 9} a snippet of our navigation code is provided, where one of the front cones are being evaluated. 
+Here the combination og linear and angular, when registering a object at a close distance, will resemble an almost full u-turn when executed.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.6\columnwidth\hspace{-1.3cm}]{Pictures/Pseudo.png}}
-    \caption{Pseudo navigation.}
+    \caption{Pseudo navigation code.}
     \label{sec:pseudo}
     \end{figure}
-
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=0.9\columnwidth\hspace{-0.1cm}]{Pictures/Navigation.png}}
+    \caption{Navigation code snippet.}
+    \label{sec:navigation}
+    \end{figure}  
 \subsection{RGB}
 As the point of the robot was a Search and Rescue, we needed a way to detect when a victim was found, which was done by the aforementioned RGB sensor, which in this case was represented by red spots on the floor.
 With this in mind, we placed the RGB sensor as close to the ground as possible in order to avoid as much light disturbance as possible.
@@ -198,7 +210,17 @@ Again, the LED would light up for a short amount of time while also incrementing
 This detection was implemented completely independent from the other navigation code, resulting in us being able to detect a collision regardless of what stage of navigation the robot was currently in.
 
 \section{Experimentation and Testing}
-simplicity...
+As mentioned earlier we have been constanly running tests throughout the course, in order to figure out what works and what does not.
+We focused on testing in order to shorten the feedback loop, and get respons on what we would have developed.
+Throughout the course it was confirmed to us that this was the right approach, as the best results came when we tested smaller changes at a time.
+As we would be running a lot of tests, it was important for us to make the testing process as smooth as possible.
+As mentioned in \textit{Navigation} the main parameters our overall strategy allowed us to adjust, was how we would divide the LiDAR readings into different angle and distane intervals, and then what linear and angular speed the robot should move with.
+To make these parameters easily adjustable, we introduced them as global variables, except for the our angular divison of the LiDAR readings, which we elaborate on later.
+
+
+as mentioned before ... cones, distance, speed, in that order
+Simplicity...
+Limitations... (react time + hardware)
 \section{Conclusion}
 
 \section{Discussion}
