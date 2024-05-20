@@ -148,7 +148,7 @@ The close distance was implemented to be used in situations where harder turns w
     \label{sec:close aviodance}
     \end{figure}
 
-    The way we implemented this navigation logic is illustarated by the flow chart in \href{sec:flowchart}{Fig. 7}. 
+The way we implemented this navigation logic is illustarated by the flow chart in \href{sec:flowchart}{Fig. 7}. 
 First we would locate if there is an obstacle in our LiDAR zones, if not the robot would continue moving forward.
 If an obstacle was detected, it would be evaluated in which cone, and thereafter at what distance.
 If the obstacle was in either of the center cones the robot, it would mean the obstacle is diretcly in the robots path meaning the robot will have to turn a lot.
@@ -217,12 +217,31 @@ We focused on testing in order to shorten the feedback loop, and get respons on 
 Throughout the course it was confirmed to us that this was the right approach, as the best results came when we tested smaller changes at a time.
 As we would be running a lot of tests, it was important for us to make the testing process as smooth as possible.
 As mentioned in \textit{Navigation} the main parameters our overall strategy allowed us to adjust, was how we would divide the LiDAR readings into different angle and distane intervals, and then what linear and angular speed the robot should move with.
-To make these parameters easily adjustable, we introduced them as global variables, except for the our angular divison of the LiDAR readings, which we elaborate on later.
+To make these parameters easily adjustable, we introduced them as global variables, except for the angular divison of the LiDAR readings, which we elaborate on later.
+For for the speeds of our robot we found the maximum linear speed to be 0.21 meters per second, and the maximum angular speed to be 2.50 radians per second.
+By dividing each of these by a 100, we got a relative velocity for both, allowing us to adjust how many percent of the maximum speed we wanted to use.
+Furthermore, for the distances we simply just created global variables, which would be used in the navigation part of the code.
+As to why the same was not done for the angular division, it came down inconvenience.
+We would experiment with a bunch of different setups, both changing the size and amount of cones used, which did not suit the use of global variables for the sake of adjustability.
 
+Through our testing we found the following to be the optimal setup:
 
-as mentioned before ... cones, distance, speed, in that order
-Simplicity...
-Limitations... (react time + hardware)
+As mentioned earlier, we split the angular intervals into 6 cones, each spanning 25 deegrees in front of the robot as illustrated in \href{sec:angles}{Fig. 3}.
+We found this to be optimal beacause; when we went for smaller intervals, either the obstacle would not register, causing a collision, or it would register in different cones when testing the same scenarios, causing inconsistensy.
+On the other hand when we went for larger intervals, we would have to generalize the action of the robot, meaning that one cone would have to account for multiple scenarios, which hurt our speed.
+
+And for the distances within those cones we differentiated between obstacles within 30 centimeters and 22 centimeters, as mentioned before and seen in \href{sec:distances}{Fig. 4}.
+Again we found this to be optimal beacause; adding more distances resulted in collisions, which was due to the see, think, act cycle of the robot took some time to execute.
+We found that before the robot had "registered" the obstacle (see), to then process the information (think) and act, the robot would have moved into a diffrent distance zone, often time leading to a collision.
+So we got better results primarily using a medium distance for high speed preventive turns, and a close distance to get out of more tricky situations.
+
+Finally, for our linear and angular speeds, we simply just fine tuned the values to achieve our overall goal of moving as fast as possible to cover the most ground, while getting as close to the obstacles as possible without colliding.
+
+What we continued to discover throughout the testing and experimentation, was that often times simplicity was the way to go.
+Making the different components more complex led to mostly similiar and sometimes even worse results.
+That being said of course there is probably a way to get better results than ours, as we after all are beginners.
+That would probably require a complely different concept from the top and down.
+We are positive that a lot more complex solution is required to acheive a better performance, but compared to our solution those performance gains would be marginal relative to the complexity needed  
 \section{Conclusion}
 
 \section{Discussion}
