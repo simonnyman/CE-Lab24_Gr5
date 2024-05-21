@@ -32,8 +32,13 @@ Student number: 202307244\\}
     Throughout the report, the specifics of these components will be introduced along with the thought process behind the implementation.
 
     As the nature of the robot is Search and Rescue, the overall aim of the project is to find as many victims as possible while avoiding obstacles.
-    The main focus of ours was the development of the natigational software, which will be be explained in depth witht the use of figures and the like, all aiming to clarify and explain the thought process behind the algorithm as clearly as possible.
+    The main focus of ours, was the development of the navigational software, which will be be explained in depth with the use of figures and the like, all aiming to clarify and explain the process of the algorithm as clearly as possible.
+    We will go in depth with how we conducted experiments, and the importance of our testing process guiding us towards good solutions.
     Genereally, we reached a fairly well working implementation, though with a few weaknesses and sources of error, which will be discussed in depth over the course of the paper.
+    Furthermore we will dive into the reasoning behind our design decisions, along with a discussion and reflexion on what improvements could have been made.
+
+    At last we conclude that we achieved our goals and...
+    Overall we acquired some foundational tools for future robot developing and the computer engineering field as a whole.
 \end{abstract}
 
 \section{Introduction}
@@ -42,14 +47,16 @@ The robot will imitate a real world scenario by autonomously navigating an obsta
 All the software will be implmented in python using the Robot Operating Software framework (ROS). For the sensors we will be using a LiDAR sensor capable of measuring distances in a 360 degree view, and an RGB-sensor which differentiates between red, green, and blue colors. 
 The overall structure of the project was split into four parts:
 \begin{itemize}
-    \item Understanding the basic concepts of robotics programming, including the see-think- act cycle \href{sec:STAC}{Fig. 1}. Reading and processing data from a RGB and range sensor.
+    \item Understanding the basic concepts of robotics programming, including the see-think-act cycle \href{sec:STAC}{Fig. 1}. Reading and processing data from a RGB and range sensor.
     \item Setting up a virtual machine, and working with ROS through a beginner's tutorial.
     \item Developing the robot navigation program, and working with ROS on the Raspberry PI .
     \item Optimizing the robot navigation and integrating code components for the RGB and LEDs
 \end{itemize} 
 Finally, the performance of the robot would be assessed based on three factors: Average speed, number of collisions and "victims" found.
-
-NTS: add Structure of report
+In this report we will firstly go through the specifications for the hardware and software that was used.
+Thereafter we will elaborate on the methods used for implementing the different parts of the project.
+Then we will explain how we used experimentation and testing throughout the course, and what findings were made.
+At the end we will discuss the upsides and downsides of our approach, followed by a conclusion where we evalute the process as a whole.
 
 \section{Specifications}
 Our Search and Rescue implementation used a turtlebot3 robot, specifically the burger configuration with dimensions 138mm x 178mm x 192mm (L $\times$ W $\times$ H)\cite{b1}.
@@ -78,7 +85,6 @@ The second node ran the basic functionality of the robot, such as managing the i
 These communicated by the subsribe/publish model to send data back and forth, in order to control the navigation of the robot.
 Another beneficial characteristic of the ROS nodes is that they also contain debug information and data. This allowed for logging the information required for optimizing and reasoning about the relevant aspects of the code as it was being tested.
 
-
 \section{Methodology and Design}
 Throughout the project we have been using the trial and error approach, which allowed for an efficient overall workflow. 
 This approach works well when having to build and optimize code for hardware, instead of reasoning about it on an abstract level, which would only get us so far, since we are beginners in this field.
@@ -86,6 +92,8 @@ With this approach we would be able to instantly see if and how the code is work
 Furthermore, this approach works in great synergy with the See-Think-Act Cycle we use for the robot, see \href{sec:STAC}{Fig. 1}.
 We are able to edit the "see", "think" and "act" parts individually and get instant feedback by testing. 
 This approach to navigation is very straight forward to reason about, simplifying both the building and optimization processes.
+For the implementation of this design we developed an algorithm, capable of navigating an arbitrary obstacle course, while checking for victims and collisions.
+This happens through a loop that runs continually until a desired duration is reached or terminated by user input. 
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/STAC.png}}
     \caption{Robots See-Think-Act Cycle.}
@@ -236,19 +244,20 @@ On the other hand when we went for larger intervals, we would have to generalize
 
 And for the distances within those cones we differentiated between obstacles within 30 centimeters and 22 centimeters, as mentioned before and seen in \href{sec:distances}{Fig. 4}.
 Again we found this to be optimal beacause; adding more distances resulted in collisions, which was due to the see, think, act cycle of the robot took some time to execute.
-We found that before the robot had "registered" the obstacle (see), to then process the information (think) and act, the robot would have moved into a diffrent distance zone, often time leading to a collision.
+We found that before the robot had "registered" the obstacle (see), to then process the information (think) and then act, the robot would have moved into a diffrent distance zone, often time leading to a collision.
 So we got better results primarily using a medium distance for high speed preventive turns, and a close distance to get out of more tricky situations.
 
 Finally, for our linear and angular speeds, we simply just fine tuned the values to achieve our overall goal of moving as fast as possible to cover the most ground, while getting as close to the obstacles as possible without colliding.
 
-NTS: Performance criteria
+With all of this combined we were able to achieve our goal of designing a dwon-scaled version of a search and rescue robot, with the ability to autonomously navigate.
+Furthermore we also achieved our goal of performing well, in regards to our performance criteria of moving at a high average speed while avoiding collisions and detecting as many victims as possible.
 
 \section{Discussion}
 What we continued to discover throughout the testing and experimentation, was that often times simplicity was the way to go.
 Making the different components more complex led to mostly similiar and sometimes even worse results.
 That being said of course there is probably a way to get better results than ours, as we after all are beginners.
 That would probably require a complely different concept from the top and down.
-We are positive that a lot more complex solution is required to acheive a better performance, but compared to our solution those performance gains would be marginal relative to the complexity needed.  
+We are positive that a lot more complex solution is required to achieve a better performance, but compared to our solution those performance gains would be marginal relative to the complexity needed.  
 \section{Conclusion}
 
 \section{Personal Contributions}
