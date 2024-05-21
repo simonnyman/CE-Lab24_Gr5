@@ -81,9 +81,11 @@ Another beneficial characteristic of the ROS nodes is that they also contain deb
 
 \section{Methodology and Design}
 Throughout the project we have been using the trial and error approach, which allowed for an efficient overall workflow. 
-This approach works well when having to build and optimize code for hardware, as we would need to see if and how the code is working and reasoning about it on an abstract level would only get us so far.
+This approach works well when having to build and optimize code for hardware, instead of reasoning about it on an abstract level, which would only get us so far, since we are beginners in this field.
+With this approach we would be able to instantly see if and how the code is working.
 Furthermore, this approach works in great synergy with the See-Think-Act Cycle we use for the robot, see \href{sec:STAC}{Fig. 1}.
-We are able to edit the "see", "think" and "act" parts individually and get instant feedback by testing, as this approach to navigation is very straight forward to reason about, simplifying both the building and optimization processes.
+We are able to edit the "see", "think" and "act" parts individually and get instant feedback by testing. 
+This approach to navigation is very straight forward to reason about, simplifying both the building and optimization processes.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/STAC.png}}
     \caption{Robots See-Think-Act Cycle.}
@@ -113,9 +115,10 @@ With this configured, we additionally addded a few centimeters to each reading d
 \subsection{Navigation}
 The logic for the navigation was developed to excel on our performance criteria of limiting collisions, while achieveing a high speed, which in turn will allow the robot to move fast through the obstacle course, thereby detecting as many "victims" as possible.
 Our navigation is based on an object detecting strategy, were we made the robots actions dependent on where the closest object was located.
-To distinguish between possible locations of an object, we had to split the LiDAR readings into both an angular interval and a distance within that interval.
+To distinguish between possible locations of an object, we had to split the LiDAR readings into both an angular interval and distance intervals.
 For our final iteration of the navigation program, we split the angular intervals into 6 cones, each spanning 25 deegrees in front of the robot as illustrated in \href{sec:angles}{Fig. 3}. 
-As the navigation is based around the concept of avoiding objects obstructing the path of the robot, we "ignored" the 180 deegrees behind the robot, by making the robot move forward in full speed.
+As the navigation is based around the concept of avoiding objects obstructing the path of the robot, we chose to "ignore" the 180 deegrees behind the robot. 
+We did this by programming, that if an obstacle was the detected in those angles the robot should move forward in full speed.
 The same concept is applied to the two remaining 15 deegree cones of the forward facing 180 deegrees, which enables the robot to run parralel to an object without turning away.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/LiDAR Angels.png}}
@@ -125,7 +128,7 @@ The same concept is applied to the two remaining 15 deegree cones of the forward
 When the the angle interval of the nearest object is registered, the navigation program would then evaluate the distance to the obstacle.
 If the obstacle is registered to be within 30 centimeters, the robot would make a slight preventive turn while keeping the linear speed high.
 If the object is within 22 centimeters, the robot would turn hard while lowering the linear speed drasticly.
-In addition if an obstacle should be registered within 10 centimeters of the LiDAR a collision would be registered.
+In addition to that if an obstacle should be registered within 10 centimeters of the LiDAR, a collision would be registered.
 An illustration of the distances within the cones is provided in \href{sec:distances}{Fig. 4}.
 The intervals and distances were both determined through our continuous testing process, which we elaborate further on in the \textit{Experimentation and Testing} section.
 \begin{figure}[htbp]
@@ -151,11 +154,11 @@ The close distance was implemented to be used in situations where harder turns w
 The way we implemented this navigation logic is illustarated by the flow chart in \href{sec:flowchart}{Fig. 7}. 
 First we would locate if there is an obstacle in our LiDAR zones, if not the robot would continue moving forward.
 If an obstacle was detected, it would be evaluated in which cone, and thereafter at what distance.
-If the obstacle was in either of the center cones the robot, it would mean the obstacle is diretcly in the robots path meaning the robot will have to turn a lot.
-The robot will have to turn less if an obstacle was detected in the middle cones, and even less if in the outer cones.
+If the obstacle was in either of the center cones, it would mean the obstacle is diretcly in the robots path meaning the robot will have to turn a lot.
+The robot will have to turn less if an obstacle was detected in the middle cones, and even less if the obstacle was in the outer cones.
 For the distance factor, an obstacle within the medium distance would result in maximum linear speed, but a close obstacle would mean a very significantly reduced linear speed.
 
-To summarize the angle of the obstacle relative to the robot would be the primary factor in determining the angular speed (i.e how much the robot turns), so the closer an obstacle is to the current path of the robot, the more it will turn.
+To summarize, the angle of the obstacle relative to the robot would be the primary factor in determining the angular speed (i.e how much the robot turns), so the closer an obstacle is to the current path of the robot, the more it will turn.
 In addition to that, the distance to said obstacle would be the primary factor in determining the linear speed (i.e how fast the robot moves forward), so the closer an obstacle is to the robot, the slower it will move to avoid collisions.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Flowchart.png}}
@@ -213,13 +216,13 @@ This detection was implemented completely independent from the other navigation 
 
 \section{Experimentation and Testing}
 As mentioned earlier we have been constanly running tests throughout the course, in order to figure out what works and what does not.
-The testing and experiments consisted mostly of figuring out how we wanted the robot to respond to a given scenario, and then creating that scenario and evaluting what actually happend.
+The testing and experiments consisted mostly of figuring out how we wanted the robot to respond to a given scenario, then creating that scenario and evaluting what actually happend.
 We focused on testing in order to shorten the feedback loop, and get respons on what we would have developed.
 Throughout the course it was confirmed to us that this was the right approach, as the best results came when we tested smaller changes at a time.
 As we would be running a lot of tests, it was important for us to make the testing process as smooth as possible.
-As mentioned in \textit{Navigation} the main parameters our overall strategy allowed us to adjust, was how we would divide the LiDAR readings into different angle and distane intervals, and then what linear and angular speed the robot should move with.
+As mentioned in \textit{Navigation} the main parameters our overall strategy allowed us to adjust, was how we would divide the LiDAR readings into different angle and distance intervals, and then what linear and angular speed the robot should move with.
 To make these parameters easily adjustable, we introduced them as global variables, except for the angular divison of the LiDAR readings, which we elaborate on later.
-For for the speeds of our robot we found the maximum linear speed to be 0.21 meters per second, and the maximum angular speed to be 2.50 radians per second.
+For for the speeds of our robot we found the maximum linear speed to be 0.22 meters per second, and the maximum angular speed to be 2.84 radians per second.
 By dividing each of these by a 100, we got a relative velocity for both, allowing us to adjust how many percent of the maximum speed we wanted to use.
 Furthermore, for the distances we simply just created global variables, which would be used in the navigation part of the code.
 As to why the same was not done for the angular division, it came down inconvenience.
@@ -238,14 +241,15 @@ So we got better results primarily using a medium distance for high speed preven
 
 Finally, for our linear and angular speeds, we simply just fine tuned the values to achieve our overall goal of moving as fast as possible to cover the most ground, while getting as close to the obstacles as possible without colliding.
 
+NTS: Performance criteria
+
+\section{Discussion}
 What we continued to discover throughout the testing and experimentation, was that often times simplicity was the way to go.
 Making the different components more complex led to mostly similiar and sometimes even worse results.
 That being said of course there is probably a way to get better results than ours, as we after all are beginners.
 That would probably require a complely different concept from the top and down.
-We are positive that a lot more complex solution is required to acheive a better performance, but compared to our solution those performance gains would be marginal relative to the complexity needed  
+We are positive that a lot more complex solution is required to acheive a better performance, but compared to our solution those performance gains would be marginal relative to the complexity needed.  
 \section{Conclusion}
-
-\section{Discussion}
 
 \section{Personal Contributions}
 Throughout the course, we generally worked in tandem in regards to the development and implementation of the robot.
