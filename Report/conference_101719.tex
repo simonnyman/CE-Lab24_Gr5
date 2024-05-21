@@ -100,7 +100,7 @@ For the implementation of this design we developed an algorithm, capable of navi
 This happens through a loop that runs continually until a desired duration is reached or terminated by user input. 
 \begin{figure}[h]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/STAC.png}}
-    \caption{Robots See-Think-Act Cycle.}
+    \caption{visualization of the See-Think-Act Cycle, of which the robot acts upon.}
     \label{sec:STAC}
     \end{figure}
 
@@ -119,9 +119,9 @@ If the value was infinitely large, it would set it to the max value of the LiDAR
 In the case that an angle gave readings very close to 0, it would set this to 1 meter as this would have no impact on the other readings.
 We had a third case, which checked whether the reading was indeed a number as it should, and would otherwise set it to 0 in which case it would be ignored as described.
 With this configured, we additionally addded a few centimeters to each reading due to the innate imprecision of the LiDAR, which will be apparent later on.
-\begin{figure}[h]
-    \centerline{\includegraphics[width=0.6\columnwidth\hspace{-1.3cm}]{Pictures/LiDARhvid.png}}
-    \caption{Ignoring the dead LiDAR angles.}
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=0.8\columnwidth\hspace{-0.5cm}]{Pictures/LiDARhvid.png}}
+    \caption{Code snippet showing how we "ignored" the dead LiDAR angles, by changing their values.}
     \label{sec:lidar}
     \end{figure}
 
@@ -133,9 +133,10 @@ For our final iteration of the navigation program, we split the angular interval
 As the navigation is based around the concept of avoiding objects obstructing the path of the robot, we chose to "ignore" the 180 deegrees behind the robot. 
 We did this by programming explicitly that if an obstacle was the detected in those angles the robot should move forward in full speed.
 The same concept is applied to the two remaining 15 deegree cones of the forward facing 180 deegrees, which enables the robot to run parralel to an object without turning away.
-\begin{figure}[h]
-    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/LiDAR Angels.png}}
-    \caption{LiDAR zones illustration. Please note that the angles of the cones are slightly distorted}
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/LiDAR Angels.png}}
+    \caption{Illustartion of how the LiDAR reading are divided into cones.
+    Please note that the angles of the cones are slightly distorted}
     \label{sec:angles}
     \end{figure}
 When the the angle interval of the nearest object is registered, the navigation program would then evaluate the distance to the obstacle.
@@ -144,23 +145,24 @@ If the object is within 22 centimeters, the robot would turn hard while lowering
 In addition to this, if an obstacle should be registered within 10 centimeters of the LiDAR, a collision would be registered.
 An illustration of the distances within the cones is provided in \href{sec:distances}{Fig. 4}.
 The intervals and distances were both determined through our continuous testing process, which we elaborate further on in the \textit{Experimentation and Testing} section.
-\begin{figure}[h]
-    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/LiDAR Distances.png}}
-    \caption{LiDAR distances illustration. Please note that the angle of the cones and distances are slightly distorted}
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/LiDAR Distances.png}}
+    \caption{Illustartion of how the LiDAR zones are further divided with distances intervals. 
+    Please note that the angle of the cones and distances are slightly distorted}
     \label{sec:distances}
     \end{figure}
 
 The thought behind this approach to our logic design, was to use the medium distance to locate objects early and then make the robot take preventive action.
 Locating the obstacles early allows the robot to make a series of smaller turns, where the linear speed is kept high. The concept is visualized in \href{sec:medium aviodance}{Fig. 5}.
 The close distance was implemented to be used in situations where harder turns were needed to avoid a collision. A potential example could be a dead end, as illustrated in \href{sec:close aviodance}{Fig. 6}.
-\begin{figure}[b]
-    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Medium Distance Aviodance.png}}
-    \caption{Illustration of the robot using the medium distance in different angle intervals to move fast through a potential obstacle course scenario.}
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Medium Distance Aviodance.png}}
+    \caption{Illustration of the robot using the medium distance interval in different cones, in order to move fast through a potential scenario of an arbitrary obstacle course.}
     \label{sec:medium aviodance}
     \end{figure}
-\begin{figure}[h]
-    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Close Distance Avoidance.png}}
-    \caption{Illustration of a scenario where the robot would use the close distance.}
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Close Distance Avoidance.png}}
+    \caption{Illustration of the robot getting into a scenrio, where it would need to use the close distance to avoid a collision.}
     \label{sec:close aviodance}
     \end{figure}
 
@@ -188,14 +190,21 @@ Here the combination og linear and angular, when registering an object at a clos
     \label{sec:flowchart}
     \end{figure}
 
-\begin{figure}[h]
-    \centerline{\includegraphics[width=0.6\columnwidth\hspace{-1.3cm}]{Pictures/Pseudo.png}}
-    \caption{Pseudo navigation code.}
+For the conrete implmentation we would use a bunch of if- and else statements, ressembeling the pseudo code in \href{sec:pseudo}{Fig. 8}.
+The first set of if statements would determine in which angle the closest obstacle was present.
+Thereafter some nested if statements would determine how far the object was from the robot.
+We would then through our testing find the best combination of linear and angular speed, to achieve the desired action.
+For example in \href{sec:navigation}{Fig. 9} a snippet of our navigation code is provided, where one of the front cones are being evaluated. 
+Here the combination og linear and angular, when registering a object at a close distance, will resemble an almost full u-turn when executed.
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=0.75\columnwidth\hspace{-0.5cm}]{Pictures/Pseudo.png}}
+    \caption{A pseudo version of our navigation code, illustrating the overall structure of how the actual code is written.}
     \label{sec:pseudo}
     \end{figure}
-\begin{figure}[h]
-    \centerline{\includegraphics[width=0.9\columnwidth\hspace{-0.1cm}]{Pictures/Navigation.png}}
-    \caption{Navigation code snippet.}
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=1.0\columnwidth\hspace{0.0cm}]{Pictures/Navigation.png}}
+    \caption{Snippet of our navigation code. 
+    In this case, showing how the robot would act if an obstacle is detectecd in either of the distance intervals, in the right front cone.}
     \label{sec:navigation}
     \end{figure}
 
@@ -217,9 +226,9 @@ Eventually, the condition for finding a victim was as shown in Fig. 9.
 If all these conditions were met, an LED would light up and our \textit{victim counter} variable would be incremented by 1.
 With the detection code finished, a short delay was added to the detection as the sensor would otherwise be able to detect multiple victims from a single red spot, courtesy of the high clock speed.
 
-\begin{figure}[h]
-    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/rgbpseudo.png}}
-    \caption{pseudo code showcasing the RGB logic.}
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/rgbpseudo.png}}
+    \caption{A pseudo version of how the logic for the RGB-sensor is implemented.}
     \label{sec:rgb}
     \end{figure}
 
@@ -274,11 +283,10 @@ This illustrates the trial and error approach we used, as the data shows both im
 Even though improvement is clear in the data, we can not only evaluate the performance based on raw numbers. 
 Througout the testruns we observed and evaluated the perfomance of the robot qualitatively.
 This would give us feedback on what specific cases, the robot struggled to handle and thereby we knew what to change and improve on in the algorithm.
-
-For the testing of the robot, we used varying sets of trial courses, but attempted to make them as similar as possible in regards to the complexity, as in that way we made sure the test data could be comparable.
-In addition, in between the testruns we also conducted experiments where we would only focus on singular aspects of the whole navigational process.
-\begin{figure}[h]
-    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Graph.png}}
+For the testing of the robot, we used varying set og trial courses, but attempted to make them as similar as possible in regards to the complexity, in that way we made sure the test data could be comparable.
+In addition, in between the testruns we also conducted experiments were we would only focus on singular aspects of the whole navigational process.
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Graph.png}}
     \caption{Graph showcasing the evolution of our program by highlighting the different criteria. The values in each iteration are representative of the general performance of that iteration even though multiple tests were carried out in each iteration.}
     \label{sec:graph}
     \end{figure}
