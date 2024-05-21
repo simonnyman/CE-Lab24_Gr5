@@ -129,10 +129,15 @@ With this configured, we additionally addded a few centimeters to each reading d
 The logic for the navigation was developed to excel on our performance criteria of limiting collisions, while achieveing a high speed, which in turn will allow the robot to move fast through the obstacle course, thereby detecting as many "victims" as possible.
 Our navigation is based on an object detecting strategy, were we made the robots actions dependent on where the closest object was located.
 To distinguish between possible locations of an object, we had to split the LiDAR readings into both an angular interval and distance intervals.
-For our final iteration of the navigation program, we split the angular intervals into 6 cones, each spanning 25 deegrees in front of the robot as illustrated in \href{sec:angles}{Fig. 3}. 
-As the navigation is based around the concept of avoiding objects obstructing the path of the robot, we chose to "ignore" the 180 deegrees behind the robot. 
-We did this by programming explicitly that if an obstacle was the detected in those angles the robot should move forward in full speed.
-The same concept is applied to the two remaining 15 deegree cones of the forward facing 180 deegrees, which enables the robot to run parralel to an object without turning away.
+For our final iteration of the navigation program, we split the angular intervals into 6 cones, each spanning 25 degrees in front of the robot as illustrated in \href{sec:angles}{Fig. 3}. 
+As the navigation is based around the concept of avoiding objects obstructing the path of the robot, we chose to "ignore" the 180 degrees behind the robot. 
+We did this by programming explicitly that if an obstacle was the detected in those angles the robot should move forward in full speed, the code is shown in \href{sec:ignore}{Fig. 4}.
+The same concept is applied to the two remaining 15 deegree cones of the forward facing 180 degrees, which enables the robot to run parralel to an object without turning away.
+\begin{figure}[t]
+    \centerline{\includegraphics[width=1.0\columnwidth\hspace{0.0cm}]{Pictures/ignore.png}}
+    \caption{Code snippet showing how we "ignored" the backwards facing 180 degrees along with the outermost 15 degrees to each side of the front facing 180 degrees.}
+    \label{sec:ignore}
+    \end{figure}
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/LiDAR Angels.png}}
     \caption{Illustartion of how the LiDAR reading are divided into cones.
@@ -155,7 +160,7 @@ The intervals and distances were both determined through our continuous testing 
 The thought behind this approach to our logic design, was to use the medium distance to locate objects early and then make the robot take preventive action.
 Locating the obstacles early allows the robot to make a series of smaller turns, where the linear speed is kept high. The concept is visualized in \href{sec:medium aviodance}{Fig. 5}.
 The close distance was implemented to be used in situations where harder turns were needed to avoid a collision. A potential example could be a dead end, as illustrated in \href{sec:close aviodance}{Fig. 6}.
-\begin{figure}[htbp]
+\begin{figure}[b]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Medium Distance Aviodance.png}}
     \caption{Illustration of the robot using the medium distance interval in different cones, in order to move fast through a potential scenario of an arbitrary obstacle course.}
     \label{sec:medium aviodance}
@@ -176,6 +181,11 @@ For the distance factor, an obstacle within the medium distance would result in 
 To summarize, the angle of the obstacle relative to the robot would be the primary factor in determining the angular speed (i.e how much the robot turns), so the closer an obstacle is to the current path of the robot, the more it will turn.
 In addition to that, the distance to said obstacle would be the primary factor in determining the linear speed (i.e how fast the robot moves forward), so the closer an obstacle is to the robot, the slower it will move to avoid collisions.
 
+\begin{figure}[b]
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Flowchart.png}}
+    \caption{Flowchart describing how the robot will act, depending on relative position of obstacle.}
+    \label{sec:flowchart}
+    \end{figure}
 
 For the concrete implmentation we would use a bunch of if- and else statements, resembling the pseudo code in \href{sec:pseudo}{Fig. 8}.
 The first set of if statements would determine in which angle the closest obstacle was present.
@@ -183,12 +193,6 @@ Thereafter some nested if statements would determine how far the object was from
 We would then through our testing find the best combination of linear and angular speed, to achieve the desired action.
 For example in \href{sec:navigation}{Fig. 9}, a snippet of our navigation code is provided, where one of the front cones are being evaluated. 
 Here the combination og linear and angular, when registering an object at a close distance, will resemble an almost full u-turn when executed.
-
-\begin{figure}[h]
-    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Flowchart.png}}
-    \caption{Flowchart describing how the robot will act, depending on relative position of obstacle.}
-    \label{sec:flowchart}
-    \end{figure}
 
 For the conrete implmentation we would use a bunch of if- and else statements, ressembeling the pseudo code in \href{sec:pseudo}{Fig. 8}.
 The first set of if statements would determine in which angle the closest obstacle was present.
@@ -237,9 +241,16 @@ As mentioned in the RGB section, we had an LED light up each time a victim was f
 It would light up for a set amount of time and then turn off again afterwards.
 
 The same thing was done for the \textit{collision counter} variable, as this was also signified by an LED, only in a different color.
-This would light up whenever the robot received a reading from the LiDAR below a certain threshold, corresponding to the length of the robot.
+This would light up whenever the robot received a reading from the LiDAR below a certain threshold, corresponding to the length of the robot, as seen in \href{sec:collision}{Fig. 11}
 Again, the LED would light up for a short amount of time while also incrementing the variable responsible for counting the total amount of collisions during a run.
 This detection was implemented completely independent from the other navigation code, resulting in us being able to detect a collision regardless of what stage of navigation the robot was currently in.
+
+\begin{figure}[t]
+    \centerline{\includegraphics[width=1.0\columnwidth\hspace{0.0cm}]{Pictures/Collision.png}}
+    \caption{Snippet of collision counter, showing that if the LiDAR registers an object within the collision distance, 
+    the LED connected to pin 16 would turn on, while also incrementing the collision counter.}
+    \label{sec:collision}
+    \end{figure}
 
 \section{Experimentation and Testing}
 As mentioned earlier, we have been constantly running tests throughout the course, in order to figure out what works and what does not.
@@ -260,7 +271,7 @@ We would experiment with a bunch of different setups, both changing the size and
 
 Through our testing we found the following to be the optimal setup:
 
-As mentioned earlier, we split the angular intervals into 6 cones, each spanning 25 deegrees in front of the robot as illustrated in \href{sec:angles}{Fig. 3}.
+As mentioned earlier, we split the angular intervals into 6 cones, each spanning 25 degrees in front of the robot as illustrated in \href{sec:angles}{Fig. 3}.
 We found this to be optimal beacause when we went for smaller intervals, either the obstacle would not register, causing a collision, or it would register in different cones when testing the same scenarios, causing inconsistensy.
 On the other hand, when we went for larger intervals, we would have to generalize the action of the robot, meaning that one cone would have to account for multiple scenarios, which hurt our speed.
 

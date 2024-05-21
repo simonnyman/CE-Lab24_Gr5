@@ -187,13 +187,17 @@ class Obstacle():
                         twist.linear.x = RELATIVE_LIN_VEL * 100
                         twist.angular.z = RELATIVE_ANG_VEL * 40
 
-                elif min_distance in lidar_distances[255:360] or lidar_distances[0:105]:
+                elif (min_distance in lidar_distances[255:360] 
+                    or lidar_distances[0:105]):
+
                     twist.linear.x = LINEAR_VEL
                     twist.angular.z = 0.0
 
                 self._cmd_pub.publish(twist)
 
-            if min_distance < COLLISION_DISTANCE and collision_delay <= time.time():
+            if (min_distance < COLLISION_DISTANCE 
+                and collision_delay <= time.time()):
+
                 GPIO.output(16, GPIO.HIGH) # Turn on
                 collision_counter = collision_counter + 1
                 collision_delay = time.time()+5
