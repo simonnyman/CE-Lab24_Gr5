@@ -17,12 +17,14 @@
 \author{\IEEEauthorblockN{Simon Nyman}
 \IEEEauthorblockA{\textit{Dept. of Electrical and Computer Engineering} \\
 \textit{Aarhus University}\\
-Student number: 202305077\\}
+Student number: 202305077\\
+AU-ID: AU745896\\}
 \and
 \IEEEauthorblockN{Jakob Palm}
 \IEEEauthorblockA{\textit{Dept. of Electrical and Computer Engineering} \\
 \textit{Aarhus University}\\
-Student number: 202307244\\}
+Student number: 202307244\\
+AU-ID: AU737592\\}
 }
 
 \maketitle
@@ -249,7 +251,24 @@ So we got better results primarily using a medium distance for high speed preven
 
 Finally, for our linear and angular speeds, we simply just fine tuned the values to achieve our overall goal of moving as fast as possible to cover the most ground, while getting as close to the obstacles as possible without colliding.
 
-The whole testing en experimentation process
+The testing en experimentation process can be illustrated by \href{sec:graph}{Fig. 11}.
+The initial dip in speed, and increase in collision from iteration 0 to 1, is caused by moving on from the original program, where to robot would move at full speed and then stop when getting close to an obstacle.
+Therafter we see a significant drop in collision as a result of that being our main focus.
+That in turn hurt our average speed, which would then be our next point of emphasis.
+Increasing the average speed for our 4th iteration, we ran into the problem of also increasing the amount of collisions.
+With our learnings from the previous iterations, we manage to keep the linear speed high, while limiting collisions.
+This illustrates the trial and error approach we used, as the data shows both improvements and unintended worsenings, but over time, we kept what was working and adjusted or remove what was not working. 
+
+Even though improvement is clear in the data, we can not only evaluate the performance based on raw numbers. 
+Througout the testuns we observed and evaluated the perfomance of the robot qualitatively.
+This would give us feedback on what specific cases, the robot struggled to handle and thereby we knew what to change and improve on in the algorithm.
+For the testing of the robot, we used varying set og trial courses, but attempted to make them as similar as possible in regards to the complexity, in that way we made sure the test data could be comparable.
+In addition, in between the testruns we also conducted experiments were we would only focus on singular aspects of the whole navigational process.
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=0.9\columnwidth]{Pictures/Graph.png}}
+    \caption{Graph showcasing the evolution of our program by highlighting the different criteria. The values in each iteration are representative of the general performance of that iteration even though multiple tests were carried out in each iteration}
+    \label{sec:graph}
+    \end{figure}
 
 With all of this combined we were able to achieve our goal of designing a dwon-scaled version of a search and rescue robot, with the ability to autonomously navigate.
 Furthermore we also achieved our goal of performing well, in regards to our performance criteria of moving at a high average speed while avoiding collisions and detecting as many victims as possible.
@@ -342,6 +361,7 @@ The same is true for the design of the figures used, along with the gathering of
 \bibitem{b3} 'LDS-01 overview', accessed 15 May 2024, available at: \url{https://www.robot-advance.com/EN/art-360-laser-distance-sensor-lds-01-2352.htm}
 \bibitem{b4} 'Using the I2C Bus', accessed 17 May 2024, available at: \url{https://www.robot-electronics.co.uk/i2c-tutorial}
 \bibitem{b5} 'GitHub repository', accessed 21 May 2024, available at: \url{https://github.com/simonnyman/CE-Lab24_Gr5}
+\bibitem{b6} 'Brightspace Course Material', accessed 21 May 2024
 \end{thebibliography}
 
 \end{document}
