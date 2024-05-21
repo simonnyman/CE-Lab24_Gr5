@@ -282,6 +282,33 @@ In reflection, we see that our approach definetly had its errors and could have 
 Our approach however still achieves all the goals that we set for ourselves, namely finding as many victims as possible while maintaining a high average speed with as few collisions as possible and we find that in the context of the specific circumstances, the advantages gained from implementing these optimizations would be marginal relative compared to the added complexity.
 
 \section{Conclusion}
+Our goal was to implement a SAR robot capable of autonomously navigating an arbitrary obstacle course and locate as many victims as possible.
+To achieve this, we aimed for safe and efficient movement through the course.
+This was done by utilizing a TurtleBot3 equipped with external sensors along with the highly practical ROS framework and navigational code written in Python.
+After establishing a wireless connection to the robot, all these tools enabled the robot to be as agile as possible while synchronously scanning the environment for obstacles and victims, using LEDs to indicate when a victim or collision was registered.
+
+The main algorithm was developed with our methodology in mind, namely the see-think-act cycle in regards to the navigational decision making, which worked in unison with our trial and error approach.
+The final iteration used the LiDAR scanner to retrieve data describing the sorrounding environment and thereby allow for efficient movement throughout the course.
+The data was then processed by splitting it into six cones and within those cones further distinuish between different distances.
+Using this data, the robot would decide how to proceed onward, all the while checking for victims on the ground using the RGB sensor.
+In order to account for the different sources of errors, several preventional code was written such that the robot would not react to false readings, whether they were coming from the LiDAR scanner or the RGB sensor.
+
+Through vigorous testing and experimentation, we explored different overall strategies for how to best advance when the robot was presented with obsstacles.
+Eventually, we ended up with an object detection and -avoidance strategy which we were able to modify in several ways in order to optimize for the best results.
+After going through a long and thorough optmization process, we ended up with our final algorithm, equpped with all the functions needed for the robot to work autonomously and in the end, display the relevant data.
+
+After having developed the program, we were able to reflect on both the final implementation and the process as a whole.
+From this, we could conclude that our approach to the project was generally on track with how we would reapproach it, were we able to redo it.
+We have discussed several alternative strategies while also reflecting on our own implementation and which weaknesses and strenghts it possesses.
+In conclusion, our approach worked well, however with room for improvement, and to achieve these improvements, we would have to adopt a more complex strategy, which in turn would result in marginal gains the amount of added complexity.
+The philosophy of keeping it simple but effective is definetly a valid technique, but should the robot have been used in a real Search and Rescue scenario, a more advanced implementation would definetly be required.
+
+Throughout this project, we have acquired very useful experience and several applicable tools in regards to the field of computer engineering as a whole.
+Specifically, the process of devising a high level vision for the project and afterwards executing it efficiently on a low level basis.
+During this, working with software architecture and the process of testing and experimenting and using the acquired results to improve the given aspects of the project.
+Furthermore, we have gained a lot of experience from working with elements and concepts specific to robot development and embedded systems.
+Especially using different hardware components such as a LiDAR scanner, an RGB sensor, both having to communicate with the Raspberry Pi mounted on the TurtleBot3.
+Also, developing our own python program and executing it using the premade ROS framework has been educational.
 
 \section{Personal Contributions}
 Throughout the course, we generally worked in tandem in regards to the development and implementation of the robot.
