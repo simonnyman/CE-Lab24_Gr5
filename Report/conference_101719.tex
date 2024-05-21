@@ -17,12 +17,12 @@
 \author{\IEEEauthorblockN{Simon Nyman}
 \IEEEauthorblockA{\textit{Dept. of Electrical and Computer Engineering} \\
 \textit{Aarhus University}\\
-Studentnumber: 202305077\\}
+Student number: 202305077\\}
 \and
 \IEEEauthorblockN{Jakob Palm}
 \IEEEauthorblockA{\textit{Dept. of Electrical and Computer Engineering} \\
 \textit{Aarhus University}\\
-Studentnumber: 202307244\\}
+Student number: 202307244\\}
 }
 
 \maketitle
@@ -181,7 +181,7 @@ Here the combination og linear and angular, when registering a object at a close
     \end{figure}  
 \subsection{RGB}
 As the point of the robot was to Search and Rescue, we needed a way to detect when a victim was found, which was done by the aforementioned RGB sensor, as the victims were represented by red spots on the floor.
-With this in mind, we placed the RGB sensor as close to the ground as the robot allowed for in order to avoid as much light disturbance as possible.
+With this in mind, we placed the RGB sensor as close to the ground as the robot allowed for in order to keep the readings as centralized as possible.
 Additionally, we also connected a white LED and placed it directly next to the RGB sensor as we experienced that it had some trouble distinguishing between colors if not properly lit.
 The RGB was connected to the Raspberry Pi using four pins, two of these being the SDA (Serial Data Line) and SCL (Serial Clock Line)\cite{b4}. The SDA is the pin resposible for transfering raw data from the sensor to the Pi, where it is interpreted processed in order to extract the red, green, and blue values.
 The SCL is simply a clock, which synchronizes data transfers over the I2C bus.
@@ -206,7 +206,7 @@ With the detection code finished, a short delay was added to the detection as th
 As mentioned in the RGB section, we had an LED light up each time a victim was found. This was done by simlpy connecting it to a different GPIO than the RGB and then having it light up whenever the victim conditions were met.
 It would light up for a set amount of time and then turn off again afterwards.
 
-The same thing was done for the\textit{collision counter} variable, as this was also signified by an LED, only in a different color.
+The same thing was done for the \textit{collision counter} variable, as this was also signified by an LED, only in a different color.
 This would light up whenever the robot received a reading from the LiDAR below a certain threshold, corresponding to the length of the robot.
 Again, the LED would light up for a short amount of time while also incrementing the variable responsible for counting the total amount of collisions during a run.
 This detection was implemented completely independent from the other navigation code, resulting in us being able to detect a collision regardless of what stage of navigation the robot was currently in.
@@ -272,11 +272,11 @@ Simon wrote and was responsible for the following sections:
 Sections V and VI along with the Abstract were written in collaboration to achieve a coalescence of thoughts and conclusions.
 The same is true for the design of the figures used, along with the gathering of information.
 \begin{thebibliography}{00}
-\bibitem{b1} 'Turtlebot3 features', accessed 15 May 2024, available at: https://emanual.robotis.com/docs/en/platform/turtlebot3/features/
-\bibitem{b2} 'Renesas RGB-sensor ISL29125 datasheet', accessed 15 May 2024, available at: https://www.alldatasheet.com/datasheet-pdf/pdf/1045936/RENESAS/ISL29125.html
-\bibitem{b3} 'LDS-01 overview', accessed 15 May 2024, available at: https://www.robot-advance.com/EN/art-360-laser-distance-sensor-lds-01-2352.htm
-\bibitem{b4} 'Using the I2C Bus', accessed 17 May 2024, available at: https://www.robot-electronics.co.uk/i2c-tutorial
-\bibitem{b5} 'GitHub repository', accessed ... May 2024, available at: ...
+\bibitem{b1} 'Turtlebot3 features', accessed 15 May 2024, available at: \url{https://emanual.robotis.com/docs/en/platform/turtlebot3/features/}
+\bibitem{b2} 'Renesas RGB-sensor ISL29125 datasheet', accessed 15 May 2024, available at: \url{https://www.alldatasheet.com/datasheet-pdf/pdf/1045936/RENESAS/ISL29125.html}
+\bibitem{b3} 'LDS-01 overview', accessed 15 May 2024, available at: \url{https://www.robot-advance.com/EN/art-360-laser-distance-sensor-lds-01-2352.htm}
+\bibitem{b4} 'Using the I2C Bus', accessed 17 May 2024, available at: \url{https://www.robot-electronics.co.uk/i2c-tutorial}
+\bibitem{b5} 'GitHub repository', accessed 21 May 2024, available at: \url{https://github.com/simonnyman/CE-Lab24_Gr5}
 \end{thebibliography}
 
 \end{document}
