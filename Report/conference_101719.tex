@@ -253,11 +253,34 @@ With all of this combined we were able to achieve our goal of designing a dwon-s
 Furthermore we also achieved our goal of performing well, in regards to our performance criteria of moving at a high average speed while avoiding collisions and detecting as many victims as possible.
 
 \section{Discussion}
-What we continued to discover throughout the testing and experimentation, was that often times simplicity was the way to go.
-Making the different components more complex led to mostly similiar and sometimes even worse results.
-That being said of course there is probably a way to get better results than ours, as we after all are beginners.
-That would probably require a complely different concept from the top and down.
-We are positive that a lot more complex solution is required to achieve a better performance, but compared to our solution those performance gains would be marginal relative to the complexity needed.  
+Throughout the project, we rigorously tested the program and attempted more complex iterations than what ended up being our final implementation.
+However, we discovered that often simplicity was the way to go as the course which the robot was going to navigate was not littered with complex obstacles that required sofisticated decision making.
+This meant that when we would try out more intricate navigation code, it often led to an ineffeiciently running robot as it was equipped with solutions to a problem that would never arise.
+That being said, of course our code was far from perfect and could have been optimized in a manner of ways, but our lack of experience with ROS and robot navigation was evidently a limiting factor in this regard.
+
+By looking at our code afterwards, we discovered a few places in which the code could have been optimized in order for the robot to navigate the course much smoother.
+One of such is the hard coded LiDAR angles which the robot uses for navigation. For an uninitiated reader of our code, this may have been a very difficuilt part of the code to make sense of, as they were all written in the form $[index \hspace{1mm} 0: index \hspace{1mm} 1]$.
+A much more streamlined and easy to use apporach would have been to make these variable and name them as had been done with many of our other variables used.
+This leads to another point of optimization, as we ended up with a messy plethora of different variables, both global and local, which even confused us at times. These could likely have been streamlined and organized much more appropriately, had we been more careful in our naming and organization of these from the beginning.
+Additionally, the overall structure of the final program is not ideal as it is constructed in a very blocky manner with a lot of nesting being a clear trend. As we also discovered during our testing process, this makes the code more strenuous to edit as we end up with a lot of unintentional dependencies.
+
+Generally, the soures of error mentioned above all stem from our lack of experience in working on such projects. Especially the monolithic structure of the code means that scalability and maintainability suffers, which is also one of the main difficulties that we encountered.
+The frequent hardware interactions and I/O calls all lead to an ineffeiciently running code as these are very time consuming operations.
+
+Had we been able to redo the project, we would likely have used a different approach.
+Having a clear plan from the beginning of the project would greatly benefit the development flow of the project as this could likely have avoided many of the errors discussed, since a more streamlined code could have been developed from the very beginning.
+This would likely eliminate the repetitive use of nested functions and inefficient hardware communication.
+One method could be integrating a bit of machine learning and data storage in the code such that the robot would not visit the same place twice as the course would be mapped along the way. This would greatly improve the efficiency in searching for victims, as we found that often the same victim would be identified multiple times since the robot would return to the point that it was first found, caused by the fact that it had no way of knowing where it had already been.
+This approach would definetly benefit our goal of maximum  number of victims found with as high average velocity as possible.
+However, in the context of this specific project, this may be overdoing it a bit as the course in which the robot was supposed to run was not very large, but looking at it from purely a search and Rescue point of view, it would definetly be a major improvement.
+
+To optimize purely for the specific course at hand, it might have been a good idea, instead of searching for obstacles, to search for free spaces.
+Thinking about this, it becomes apparent that this approach would result in a lighter workload and less data processing, as the direction in which most free space is available is less likely to vary as frequently as the nearest obstacle.
+However, it might also result in the robot never reaching certain areas if it is only accessable by a narrow path or similar.
+
+In reflection, we see that our approach definetly had its errors and could have been optimized in many ways that would omit the errors found in our final implementation.
+Our approach however still achieves all the goals that we set for ourselves, namely finding as many victims as possible while maintaining a high average speed with as few collisions as possible and we find that in the context of the specific circumstances, the advantages gained from implementing these optimizations would be marginal relative compared to the added complexity.
+
 \section{Conclusion}
 
 \section{Personal Contributions}
