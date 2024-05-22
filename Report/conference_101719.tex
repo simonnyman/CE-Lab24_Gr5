@@ -46,7 +46,7 @@ AU-ID: AU737592\\}
 
 \section{Introduction}
 The goal for this project was to design a down-scaled version of a Search And Rescue (SAR) robot, used to rescue victims in the aftermaths of natural disasters.
-The robot will imitate a real world scenario by autonomously navigating an obstacle course and distinguishing between different color markings, representing potential victims. To achieve this we use the TurtleBot3 Burger Robot equipped with different sensors.
+The robot will imitate a real world scenario by autonomously navigating an obstacle course and distinguishing between different color markings, representing potential victims. To achieve this, we use the TurtleBot3 Burger Robot equipped with different sensors.
 All the software will be implmented in python using the Robot Operating Software framework (ROS). For the sensors we will be using a LiDAR sensor capable of measuring distances in a 360 degree view, and an RGB-sensor which differentiates between the colors, red, green, and blue. 
 The overall structure of the project was split into four parts:
 \begin{enumerate}
@@ -130,6 +130,7 @@ With this configured, we additionally addded a few centimeters to each reading d
 The logic for the navigation was developed to excel on our performance criteria of limiting collisions, while achieveing a high speed, which in turn will allow the robot to move fast through the obstacle course, thereby detecting as many "victims" as possible.
 Our navigation is based on an object detecting strategy, were we made the robots actions dependent on where the closest object was located.
 To distinguish between possible locations of an object, we had to split the LiDAR readings into both an angular interval and distance intervals.
+
 For our final iteration of the navigation program, we split the angular intervals into 6 cones, each spanning 25 degrees in front of the robot as illustrated in \href{sec:angles}{Fig. 3}. 
 As the navigation is based around the concept of avoiding objects obstructing the path of the robot, we chose to "ignore" the 180 degrees behind the robot. 
 We did this by programming explicitly that if an obstacle was the detected in those angles the robot should move forward in full speed, the code is shown in \href{sec:ignore}{Fig. 4}.
@@ -195,7 +196,7 @@ Thereafter some nested if statements would determine how far the object is from 
 We would then through our testing find the best combination of linear and angular speed, to achieve the desired action.
 For example in \href{sec:navigation}{Fig. 10}, a snippet of our navigation code is provided, where one of the front cones are being evaluated. 
 Here the combination og linear and angular, when registering an object at a close distance, will resemble an almost full u-turn when executed.
-While an object registered at the medium distance, will keep the linear speed high, while still turning quite a bit.
+While an object registered at the medium distance will maintain a high linear speed, while also turning quite sharply.
 
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.75\columnwidth\hspace{-0.5cm}]{Pictures/Pseudo.png}}
