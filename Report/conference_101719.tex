@@ -47,7 +47,7 @@ AU-ID: AU737592\\}
 \section{Introduction}
 The goal for this project was to design a down-scaled version of a Search And Rescue (SAR) robot, used to rescue victims in the aftermaths of natural disasters.
 The robot will imitate a real world scenario by autonomously navigating an obstacle course and distinguishing between different color markings, representing potential victims. To achieve this we use the TurtleBot3 Burger Robot equipped with different sensors.
-All the software will be implmented in python using the Robot Operating Software framework (ROS). For the sensors we will be using a LiDAR sensor capable of measuring distances in a 360 degree view, and an RGB-sensor which differentiates between red, green, and blue colors. 
+All the software will be implmented in python using the Robot Operating Software framework (ROS). For the sensors we will be using a LiDAR sensor capable of measuring distances in a 360 degree view, and an RGB-sensor which differentiates between the colors, red, green, and blue. 
 The overall structure of the project was split into four parts:
 \begin{enumerate}
     \item Understanding the basic concepts of robotics programming, including the see-think-act cycle \href{sec:STAC}{Fig. 1}, along with reading and processing data from an RGB and range sensor.
@@ -56,6 +56,7 @@ The overall structure of the project was split into four parts:
     \item Optimizing the robot navigation and integrating code components for the RGB and LEDs
 \end{enumerate} 
 Finally, the performance of the robot would be assessed based on three factors: Average speed, number of collisions and "victims" found.
+
 In this report we will firstly go through the specifications for the hardware and software that was used.
 Thereafter we will elaborate on the methods used for implementing the different parts of the project.
 Then we will explain how we used experimentation and testing throughout the course, and what findings were made.
@@ -90,7 +91,7 @@ Another beneficial characteristic of the ROS nodes is that they also contain deb
 
 \section{Methodology and Design}
 Throughout the project we have been using the trial and error approach, which allowed for an efficient overall workflow. 
-This approach works well when having to build and optimize code for hardware, instead of reasoning about it on an abstract level, which would only get us so far, since we are beginners in this field.
+This approach works well when having to build and optimize code for hardware, instead of reasoning about it on an abstract level, which would only get us so far, as we are beginners in this field.
 With this approach we would be able to instantly see if and how the code is working.
 
 Furthermore, this approach works in great synergy with the See-Think-Act Cycle we use for the robot, see \href{sec:STAC}{Fig. 1}.
@@ -100,7 +101,7 @@ For the implementation of this design we developed an algorithm, capable of navi
 This happens through a loop that runs continually until a desired duration is reached or terminated by user input. 
 \begin{figure}[h]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/STAC.png}}
-    \caption{visualization of the See-Think-Act Cycle, of which the robot acts upon.}
+    \caption{visualization of the See-Think-Act Cycle, of which the robot works upon.}
     \label{sec:STAC}
     \end{figure}
 
@@ -134,32 +135,33 @@ As the navigation is based around the concept of avoiding objects obstructing th
 We did this by programming explicitly that if an obstacle was the detected in those angles the robot should move forward in full speed, the code is shown in \href{sec:ignore}{Fig. 4}.
 The same concept is applied to the two remaining 15 deegree cones of the forward facing 180 degrees, which enables the robot to run parralel to an object without turning away.
 \begin{figure}[t]
-    \centerline{\includegraphics[width=1.0\columnwidth\hspace{0.0cm}]{Pictures/ignore.png}}
-    \caption{Code snippet showing how we "ignored" the backwards facing 180 degrees along with the outermost 15 degrees to each side of the front facing 180 degrees.}
-    \label{sec:ignore}
-    \end{figure}
-\begin{figure}[htbp]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/LiDAR Angels.png}}
     \caption{Illustartion of how the LiDAR reading are divided into cones.
-    Please note that the angles of the cones are slightly distorted}
+    Please note that the angles of the cones are slightly distorted.}
     \label{sec:angles}
     \end{figure}
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=1.0\columnwidth\hspace{0.0cm}]{Pictures/ignore.png}}
+    \caption{Code snippet showing how we "ignored" the backwards facing 180 degrees, along with the outermost 15 degrees to each side of the front facing 180 degrees.}
+    \label{sec:ignore}
+    \end{figure}
+
 When the the angle interval of the nearest object is registered, the navigation program would then evaluate the distance to the obstacle.
 If the obstacle is registered to be within 30 centimeters, the robot would make a slight preventive turn while keeping the linear speed high.
 If the object is within 22 centimeters, the robot would turn hard while lowering the linear speed drastically.
 In addition to this, if an obstacle should be registered within 10 centimeters of the LiDAR, a collision would be registered.
-An illustration of the distances within the cones is provided in \href{sec:distances}{Fig. 4}.
+An illustration of the distances within the cones is provided in \href{sec:distances}{Fig. 5}.
 The intervals and distances were both determined through our continuous testing process, which we elaborate further on in the \textit{Experimentation and Testing} section.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/LiDAR Distances.png}}
     \caption{Illustartion of how the LiDAR zones are further divided with distances intervals. 
-    Please note that the angle of the cones and distances are slightly distorted}
+    Please note that the angle of the cones and distances are slightly distorted.}
     \label{sec:distances}
     \end{figure}
 
 The thought behind this approach to our logic design, was to use the medium distance to locate objects early and then make the robot take preventive action.
-Locating the obstacles early allows the robot to make a series of smaller turns, where the linear speed is kept high. The concept is visualized in \href{sec:medium aviodance}{Fig. 5}.
-The close distance was implemented to be used in situations where harder turns were needed to avoid a collision. A potential example could be a dead end, as illustrated in \href{sec:close aviodance}{Fig. 6}.
+Locating the obstacles early allows the robot to make a series of smaller turns, where the linear speed is kept high. The concept is visualized in \href{sec:medium aviodance}{Fig. 6}.
+The close distance was implemented to be used in situations where harder turns were needed to avoid a collision. A potential example could be a dead end, as illustrated in \href{sec:close aviodance}{Fig. 7}.
 \begin{figure}[b]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Medium Distance Aviodance.png}}
     \caption{Illustration of the robot using the medium distance interval in different cones, in order to move fast through a potential scenario of an arbitrary obstacle course.}
@@ -171,8 +173,8 @@ The close distance was implemented to be used in situations where harder turns w
     \label{sec:close aviodance}
     \end{figure}
 
-The way we implemented this navigation logic is illustarated by the flow chart in \href{sec:flowchart}{Fig. 7}. 
-First we would locate if there is an obstacle in our LiDAR zones, if not the robot would continue moving forward.
+The way we implemented this navigation logic is illustarated by the flow chart in \href{sec:flowchart}{Fig. 8}. 
+First we would locate if there is an obstacle in one of our LiDAR zones, if not the robot would continue moving forward.
 If an obstacle was detected, it would be evaluated in which cone, and thereafter at what distance.
 If the obstacle was in either of the center cones, it would mean the obstacle is diretcly in the robots path meaning the robot will have to turn a lot.
 The robot will have to turn less if an obstacle was detected in the middle cones, and even less if the obstacle was in the outer cones.
@@ -187,19 +189,14 @@ In addition to that, the distance to said obstacle would be the primary factor i
     \label{sec:flowchart}
     \end{figure}
 
-For the concrete implmentation we would use a bunch of if- and else statements, resembling the pseudo code in \href{sec:pseudo}{Fig. 8}.
-The first set of if statements would determine in which angle the closest obstacle was present.
-Thereafter some nested if statements would determine how far the object was from the robot.
+For the concrete implmentation we would use a bunch of if- and else statements, resembling the pseudo code in \href{sec:pseudo}{Fig. 9}.
+The first set of if statements would determine in which angle the closest obstacle is present.
+Thereafter some nested if statements would determine how far the object is from the robot.
 We would then through our testing find the best combination of linear and angular speed, to achieve the desired action.
-For example in \href{sec:navigation}{Fig. 9}, a snippet of our navigation code is provided, where one of the front cones are being evaluated. 
+For example in \href{sec:navigation}{Fig. 10}, a snippet of our navigation code is provided, where one of the front cones are being evaluated. 
 Here the combination og linear and angular, when registering an object at a close distance, will resemble an almost full u-turn when executed.
+While an object registered at the medium distance, will keep the linear speed high, while still turning quite a bit.
 
-For the conrete implmentation we would use a bunch of if- and else statements, ressembeling the pseudo code in \href{sec:pseudo}{Fig. 8}.
-The first set of if statements would determine in which angle the closest obstacle was present.
-Thereafter some nested if statements would determine how far the object was from the robot.
-We would then through our testing find the best combination of linear and angular speed, to achieve the desired action.
-For example in \href{sec:navigation}{Fig. 9} a snippet of our navigation code is provided, where one of the front cones are being evaluated. 
-Here the combination og linear and angular, when registering a object at a close distance, will resemble an almost full u-turn when executed.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=0.75\columnwidth\hspace{-0.5cm}]{Pictures/Pseudo.png}}
     \caption{A pseudo version of our navigation code, illustrating the overall structure of how the actual code is written.}
@@ -226,7 +223,7 @@ Since the victims were represented by red dots, we wrote our code in such a way 
 
 However, due to unavoidable uncertainties in measurement, we would have to manually upscale the blue readings by a certain factor as these seemed to consistently be a bit lower than expected.
 This was done by simply isolating the blue data and multiplying it by a factor we found fitting.
-Eventually, the condition for finding a victim was as shown in Fig. 9.
+Eventually, the condition for finding a victim was as shown in \href{sec:rgb}{Fig. 11}.
 If all these conditions were met, an LED would light up and our \textit{victim counter} variable would be incremented by 1.
 With the detection code finished, a short delay was added to the detection as the sensor would otherwise be able to detect multiple victims from a single red spot, courtesy of the high clock speed.
 
@@ -241,7 +238,7 @@ As mentioned in the RGB section, we had an LED light up each time a victim was f
 It would light up for a set amount of time and then turn off again afterwards.
 
 The same thing was done for the \textit{collision counter} variable, as this was also signified by an LED, only in a different color.
-This would light up whenever the robot received a reading from the LiDAR below a certain threshold, corresponding to the length of the robot, as seen in \href{sec:collision}{Fig. 11}
+This would light up whenever the robot received a reading from the LiDAR below a certain threshold, corresponding to the length of the robot, as seen in \href{sec:collision}{Fig. 12}
 Again, the LED would light up for a short amount of time while also incrementing the variable responsible for counting the total amount of collisions during a run.
 This detection was implemented completely independent from the other navigation code, resulting in us being able to detect a collision regardless of what stage of navigation the robot was currently in.
 
@@ -275,14 +272,14 @@ As mentioned earlier, we split the angular intervals into 6 cones, each spanning
 We found this to be optimal beacause when we went for smaller intervals, either the obstacle would not register, causing a collision, or it would register in different cones when testing the same scenarios, causing inconsistensy.
 On the other hand, when we went for larger intervals, we would have to generalize the action of the robot, meaning that one cone would have to account for multiple scenarios, which hurt our speed.
 
-And for the distances within those cones we differentiated between obstacles within 30 centimeters and 22 centimeters, as mentioned before and seen in \href{sec:distances}{Fig. 4}.
+And for the distances within those cones we differentiated between obstacles within 30 centimeters and 22 centimeters, as mentioned before and seen in \href{sec:distances}{Fig. 5}.
 Again we found this to be optimal beacause adding more distances resulted in collisions, which was due to the see, think, act cycle of the robot took some time to execute.
 We found that before the robot had "registered" the obstacle (see), to then process the information (think) and then act, the robot would have moved into a diffrent distance zone, often times leading to a collision.
 So we got better results primarily using a medium distance for high speed preventive turns, and a close distance to get out of more tricky situations.
 
 Finally, for our linear and angular speeds, we simply just finetuned the values to achieve our overall goal of moving as fast as possible to cover the most ground, while getting as close to the obstacles as possible without colliding.
 
-The testing and experimentation process can be illustrated by \href{sec:graph}{Fig. 11}.
+The testing and experimentation process can be illustrated by \href{sec:graph}{Fig. 13}.
 The initial dip in speed, and increase in collision from iteration 0 to 1, is caused by moving on from the original program, where the robot would move at full speed and then stop when getting close to an obstacle.
 Therafter we see a significant drop in collisions as a result of that being our main focus.
 That in turn hurt our average speed, which would then be our next point of emphasis.
