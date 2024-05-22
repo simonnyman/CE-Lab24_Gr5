@@ -65,8 +65,8 @@ At the end we will discuss the upsides and downsides of our approach, followed b
 \section{Specifications}
 Our Search and Rescue implementation used a TurtleBot3 robot, specifically the burger configuration with dimensions 138mm x 178mm x 192mm (L $\times$ W $\times$ H)\cite{b1}.
 On the TurtleBot3, a Raspberry Pi 3 model B+ and an Arduino are connected in order to process the incoming external signals from the various sensors.
-Furthermore, the robot has two motors attached, one for each wheel. From the specification it is evident that the robot has a maximal linear velocity of 0.22 m/s
-and a maximal rotational velocity of 2.84 rad/s. In order keep the robot as agile as possible with no wires attached, we used an 800 mA Li-Po battery and established a wireless connection, which will be specified further in a following section.
+Furthermore, the robot has two motors attached, one for each wheel. From the specification it is evident that the robot has a maximal linear velocity of 0.22 meters per second
+and a maximal rotational velocity of 2.84 radians per second. In order keep the robot as agile as possible with no wires attached, we used an 800 mA Li-Po battery and established a wireless connection, which will be specified further in a following section.
 The specific RGB used is an ISL29125 low power, high sensitivity red, green, and blue light sensor with SMBus compatibility\cite{b2}.
 The LiDAR used is the LDS-01 version with a range of 120 mm to 3500 mm, capable of doing full 360 degree scans. \cite{b3}
 
@@ -262,7 +262,7 @@ To make these parameters easily adjustable, we introduced them as global variabl
 For the speeds of our robot we found the maximum linear speed to be 0.22 meters per second, and the maximum angular speed to be 2.84 radians per second.
 By dividing each of these by a 100, we got a relative velocity for both, allowing us to adjust how many percent of the maximum speed we wanted to use.
 
-Furthermore, for the distances we simply just created global variables, which would be used in the navigation part of the code.
+Furthermore, for the distances we simply created global variables, which would be used in the navigation part of the code.
 As to why the same was not done for the angular division, it came down to inconvenience.
 We would experiment with a bunch of different setups, both changing the size and amount of cones used, which did not suit the use of global variables for the sake of adjustability.
 
@@ -289,10 +289,10 @@ With our learnings from the previous iterations, we manage to keep the linear sp
 This illustrates the trial and error approach we used, as the data shows both improvements and unintended worsenings, but over time, we kept what was working and adjusted or removed what was not. 
 
 Even though improvement is clear in the data, we can not only evaluate the performance based on raw numbers. 
-Througout the testruns we observed and evaluated the perfomance of the robot qualitatively.
+Througout the test runs we observed and evaluated the perfomance of the robot qualitatively.
 This would give us feedback on what specific cases, the robot struggled to handle and thereby we knew what to change and improve on in the algorithm.
 For the testing of the robot, we used varying set og trial courses, but attempted to make them as similar as possible in regards to the complexity, in that way we made sure the test data could be comparable.
-In addition, in between the testruns we also conducted experiments were we would only focus on singular aspects of the whole navigational process.
+In addition, in between the test runs we also conducted experiments were we would only focus on singular aspects of the whole navigational process.
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Graph.png}}
     \caption{Graph showcasing the evolution of our program by highlighting the different criteria. The values in each iteration are representative of the general performance of that iteration even though multiple tests were carried out in each iteration.}
@@ -309,7 +309,7 @@ This meant that when we would try out more intricate navigation code, it often l
 That being said, of course our code was far from perfect and could have been optimized in a manner of ways, but our lack of experience with ROS and robot navigation was evidently a limiting factor in this regard.
 
 By looking at our code afterwards, we discovered a few places in which the code could have been optimized in order for the robot to navigate the course much smoother.
-One of such is the hard coded LiDAR angles which the robot uses for navigation. For an uninitiated reader of our code, this may have been a very difficuilt part of the code to make sense of, as they were all written in the form $[index \hspace{1mm} 0: index \hspace{1mm} 1]$.
+One of such is the hard coded LiDAR angles which the robot uses for navigation. For an uninitiated reader of our code, this may have been a very difficult part of the code to make sense of, as they were all written in the form $[index \hspace{1mm} 0: index \hspace{1mm} 1]$.
 A much more streamlined and easy to use approach would have been to make these variable and name them as had been done with many of our other variables used.
 
 This leads to another point of optimization, as we ended up with a plethora of different variables, both global and local, which even confused us at times. These could likely have been streamlined and organized much more appropriately, had we been more careful in our naming and organization of these from the beginning.
@@ -339,12 +339,12 @@ This was done by utilizing a TurtleBot3 equipped with external sensors along wit
 After establishing a wireless connection to the robot, all these tools enabled the robot to be as agile as possible while synchronously scanning the environment for obstacles and victims, using LEDs to indicate when a victim or collision was registered.
 
 The main algorithm was developed with our methodology in mind, namely the see-think-act cycle in regards to the navigational decision making, which worked in unison with our trial and error approach.
-The final iteration used the LiDAR scanner to retrieve data describing the sorrounding environment and thereby allow for efficient movement throughout the course.
-The data was then processed by splitting it into six cones and within those cones further distinuish between different distances.
+The final iteration used the LiDAR scanner to retrieve data describing the surrounding environment and thereby allow for efficient movement throughout the course.
+The data was then processed by splitting it into six cones and within those cones further distinguish between different distances.
 Using this data, the robot would decide how to proceed onward, all the while checking for victims on the ground using the RGB sensor.
 In order to account for the different sources of errors, preventional code was written such that the robot would not react to false readings, whether they were coming from the LiDAR scanner or the RGB sensor.
 
-Through vigorous testing and experimentation, we explored different overall strategies for how to best advance when the robot was presented with obsstacles.
+Through vigorous testing and experimentation, we explored different overall strategies for how to best advance when the robot was presented with obstacles.
 Eventually, we ended up with an object detection and -avoidance strategy, which we were able to modify in several ways in order to optimize for the best results.
 After going through a long and thorough optmization process, we ended up with our final algorithm, equpped with all the functions needed for the robot to work autonomously and in the end, display the relevant data.
 
