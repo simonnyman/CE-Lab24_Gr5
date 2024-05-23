@@ -78,6 +78,12 @@ Therefore, we established a wireless connection to the robot by changing the net
 This allowed for easy connection to the robot once a mobile hotspot was opened, as the robot was automatically allocated an IP-address.
 With this configured, the robot would subscribe to our machine on which the required ROS environments (these will be specified in the next section) would publish actuation data to the motors of the robot, enabling wireless navigation.
 
+\subsubsection{Ubuntu and VM}
+
+The Robot Operating System (Specified in the following section) runs in the Linux derived Ubuntu, which meant we had to familiarize ourselves with this in order to effectively pilot the robot.
+To do this, we went through a beginner's tutorial \cite{b7} of the OS run on a virtual machine, namely the Oracle Virtual Box VM. Using this, we were able to execute some of the functions which would later be used in the final navigational software that would be running on the robot.
+This consisted of a purely virtual analogy of the robot, which allowed us to see how different commands would affect the behaviour of the robot.
+
 \subsubsection{ROS}
 
 The ROS operating system proved to be very useful in regards to this project, as it provided a greatly practical and convenient framework for our specific problem.
@@ -400,6 +406,7 @@ The same is true for the design of the figures used, along with the gathering of
 \bibitem{b4} 'Using the I2C Bus', accessed 17 May 2024, available at: \url{https://www.robot-electronics.co.uk/i2c-tutorial}
 \bibitem{b5} 'GitHub repository', accessed 21 May 2024, available at: \url{https://github.com/simonnyman/CE-Lab24_Gr5}
 \bibitem{b6} 'Brightspace Course Material', accessed 21 May 2024
+\bibitem{b7} 'ROS Tutorials', accessed 23 May, available at: \url{https://wiki.ros.org/ROS/Tutorials}
 \end{thebibliography}
 
 \end{document}
