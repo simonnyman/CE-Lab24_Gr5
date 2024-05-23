@@ -117,7 +117,7 @@ Before working with the LiDAR, we familiarized ourselfs working with a radar sys
 The Sonar sensor had the ability to read distances to objects, but as it was stationary it could only look in one direction.
 By working with the sensor we figured out how to convert the data from the sonar into a distance measurment, and from there make the robot autonomously take action.
 We then added a few ekstra sonsar senors, giving the robot the capability of registering objects in multiple directions, and thereby imitate how the LiDAR would be working. 
-This prepared us for working with the more complex LiDAR, and we acquired experience using the see-think-act cycle\href{sec:STAC}{Fig. 1}.  
+This prepared us for working with the more complex LiDAR, and we acquired experience with the see-think-act cycle \href{sec:STAC}{Fig. 1}.  
 
 In our implementation the LiDAR had two use cases, one being the ability to read in which direction the nearest obstacle was present, if any, and the second being the ability to read the specific distance to said obstacle, which would determine what to do next.
 As the LiDAR provides a 360 degree scan, we first had to figure out which angles to use and how these were organized within the data provided by the LiDAR.
@@ -128,7 +128,7 @@ During initial testing of the LiDAR, we encountered a problem, as some angles se
 To fix this, we wrote a loop within the LiDAR scan function, which would iterate through the values in the angles being read and, if any angles were suffering from either of these problems, would fix them, as seen in \href{sec:lidar}{Fig. 2}.
 If the value was infinitely large, it would set it to the max value of the LiDAR, which, as previously mentioned, is 3.5 meters.
 
-\begin{figure}[b]
+\begin{figure}[t]
     \centerline{\includegraphics[width=0.8\columnwidth\hspace{-0.5cm}]{Pictures/LiDARhvid.png}}
     \caption{Code snippet showing how we "ignored" the dead LiDAR angles, by changing their values.}
     \label{sec:lidar}
@@ -155,10 +155,16 @@ As the navigation is based around the concept of avoiding objects obstructing th
 We did this by programming explicitly that if an obstacle was the detected in those angles the robot should move forward in full speed, the code is shown in \href{sec:ignore}{Fig. 4}.
 The same concept is applied to the two remaining 15 deegree cones of the forward facing 180 degrees, which enables the robot to run parralel to an object without turning away.
 
-\begin{figure}[htbp]
+\begin{figure}[t]
     \centerline{\includegraphics[width=1.0\columnwidth\hspace{0.0cm}]{Pictures/ignore.png}}
     \caption{Code snippet showing how we "ignored" the backwards facing 180 degrees, along with the outermost 15 degrees to each side of the front facing 180 degrees.}
     \label{sec:ignore}
+    \end{figure}
+\begin{figure}[h]
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/LiDAR Distances.png}}
+    \caption{Illustartion of how the LiDAR zones are further divided with distances intervals. 
+    Please note that the angle of the cones and distances are slightly distorted.}
+    \label{sec:distances}
     \end{figure}
 
 When the the angle interval of the nearest object is registered, the navigation program would then evaluate the distance to the obstacle.
@@ -169,31 +175,18 @@ An illustration of the distances within the cones is provided in \href{sec:dista
 The intervals and distances were both determined through our continuous testing process, which we elaborate further on in the \textit{Experimentation and Testing} section.
 
 \begin{figure}[t]
-    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/LiDAR Distances.png}}
-    \caption{Illustartion of how the LiDAR zones are further divided with distances intervals. 
-    Please note that the angle of the cones and distances are slightly distorted.}
-    \label{sec:distances}
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Medium Distance Aviodance.png}}
+    \caption{Illustration of the robot using the medium distance interval in different cones, in order to move fast through a potential scenario of an arbitrary obstacle course.}
+    \label{sec:medium aviodance}
     \end{figure}
-
-    \begin{figure}[b]
-        \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Medium Distance Aviodance.png}}
-        \caption{Illustration of the robot using the medium distance interval in different cones, in order to move fast through a potential scenario of an arbitrary obstacle course.}
-        \label{sec:medium aviodance}
-        \end{figure}
-The thought behind this approach to our logic design, was to use the medium distance to locate objects early and then make the robot take preventive action.
-Locating the obstacles early allows the robot to make a series of smaller turns, where the linear speed is kept high. The concept is visualized in \href{sec:medium aviodance}{Fig. 6}.
-The close distance was implemented to be used in situations where harder turns were needed to avoid a collision. A potential example could be a dead end, as illustrated in \href{sec:close aviodance}{Fig. 7}.
-
-\begin{figure}[htbp]
+\begin{figure}[b]
     \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Close Distance Avoidance.png}}
     \caption{Illustration of the robot getting into a scenrio, where it would need to use the close distance to avoid a collision.}
     \label{sec:close aviodance}
     \end{figure}
-\begin{figure}[b]
-    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Flowchart.png}}
-    \caption{Flowchart describing how the robot will act, depending on relative position of obstacle.}
-    \label{sec:flowchart}
-    \end{figure}
+The thought behind this approach to our logic design, was to use the medium distance to locate objects early and then make the robot take preventive action.
+Locating the obstacles early allows the robot to make a series of smaller turns, where the linear speed is kept high. The concept is visualized in \href{sec:medium aviodance}{Fig. 6}.
+The close distance was implemented to be used in situations where harder turns were needed to avoid a collision. A potential example could be a dead end, as illustrated in \href{sec:close aviodance}{Fig. 7}.
 
 The way we implemented this navigation logic is illustarated by the flow chart in \href{sec:flowchart}{Fig. 8}. 
 First we would locate if there is an obstacle in one of our LiDAR zones, if not the robot would continue moving forward.
@@ -206,15 +199,14 @@ To summarize, the angle of the obstacle relative to the robot would be the prima
 In addition to that, the distance to said obstacle would be the primary factor in determining the linear speed (i.e how fast the robot moves forward), so the closer an obstacle is to the robot, the slower it will move to avoid collisions.
 
 \begin{figure}[t]
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Flowchart.png}}
+    \caption{Flowchart describing how the robot will act, depending on relative position of obstacle.}
+    \label{sec:flowchart}
+    \end{figure}
+\begin{figure}[b]
     \centerline{\includegraphics[width=0.75\columnwidth\hspace{-0.5cm}]{Pictures/Pseudo.png}}
     \caption{A pseudo version of our navigation code, illustrating the overall structure of how the actual code is written.}
     \label{sec:pseudo}
-    \end{figure}
-\begin{figure}[b]
-    \centerline{\includegraphics[width=1.0\columnwidth\hspace{0.0cm}]{Pictures/Navigation.png}}
-    \caption{Snippet of our navigation code. 
-    In this case, showing how the robot would act if an obstacle is detectecd in either of the distance intervals, in the right front cone.}
-    \label{sec:navigation}
     \end{figure}
 
 For the concrete implmentation we would use a bunch of if- and else statements, resembling the pseudo code in \href{sec:pseudo}{Fig. 9}.
@@ -224,6 +216,13 @@ We would then through our testing find the best combination of linear and angula
 For example in \href{sec:navigation}{Fig. 10}, a snippet of our navigation code is provided, where one of the front cones are being evaluated. 
 Here the combination og linear and angular, when registering an object at a close distance, will resemble an almost full u-turn when executed.
 While an object registered at the medium distance will maintain a high linear speed, while also turning quite sharply.
+
+\begin{figure}[h]
+    \centerline{\includegraphics[width=1.0\columnwidth\hspace{0.0cm}]{Pictures/Navigation.png}}
+    \caption{Snippet of our navigation code. 
+    In this case, showing how the robot would act if an obstacle is detectecd in either of the distance intervals, in the right front cone.}
+    \label{sec:navigation}
+    \end{figure}
 
 \subsection{RGB}
 As the point of the robot was to Search and Rescue, we needed a way to detect when a victim was found, which was done by the aforementioned RGB sensor, as the victims were represented by red spots on the floor.
@@ -257,7 +256,7 @@ This would light up whenever the robot received a reading from the LiDAR below a
 Again, the LED would light up for a short amount of time while also incrementing the variable responsible for counting the total amount of collisions during a run.
 This detection was implemented completely independent from the other navigation code, resulting in us being able to detect a collision regardless of what stage of navigation the robot was currently in.
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centerline{\includegraphics[width=1.0\columnwidth\hspace{0.0cm}]{Pictures/Collision.png}}
     \caption{Snippet of collision counter, showing that if the LiDAR registers an object within the collision distance, 
     the LED connected to pin 16 would turn on, while also incrementing the collision counter.}
@@ -292,12 +291,6 @@ Again we found this to be optimal beacause adding more distances resulted in col
 We found that before the robot had "registered" the obstacle (see), to then process the information (think) and then act, the robot would have moved into a diffrent distance zone, often times leading to a collision.
 So we got better results primarily using a medium distance for high speed preventive turns, and a close distance to get out of more tricky situations.
 
-\begin{figure}[b]
-    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Graph.png}}
-    \caption{Graph showcasing the evolution of our program by highlighting the different criteria. The values in each iteration are representative of the general performance of that iteration even though multiple tests were carried out in each iteration.}
-    \label{sec:graph}
-    \end{figure}
-
 Finally, for our linear and angular speeds, we simply just finetuned the values to achieve our overall goal of moving as fast as possible to cover the most ground, while getting as close to the obstacles as possible without colliding.
 
 The testing and experimentation process can be illustrated by \href{sec:graph}{Fig. 13}.
@@ -317,6 +310,12 @@ In addition, in between the test runs we also conducted experiments were we woul
 
 With all of this combined, we were able to achieve our goal of designing a downscaled version of a Search and Rescue robot, with the ability to autonomously navigate.
 Furthermore we also achieved our goal of performing well in regards to our performance criteria of moving at a high average speed while avoiding collisions and detecting as many victims as possible.
+
+\begin{figure}[h]
+    \centerline{\includegraphics[width=1.0\columnwidth]{Pictures/Graph.png}}
+    \caption{Graph showcasing the evolution of our program by highlighting the different criteria. The values in each iteration are representative of the general performance of that iteration even though multiple tests were carried out in each iteration.}
+    \label{sec:graph}
+    \end{figure}
 
 \section{Discussion}
 Throughout the project, we rigorously tested the program and attempted more complex iterations than what ended up being our final implementation.
@@ -412,7 +411,7 @@ The same is true for the design of the figures used, along with the gathering of
 \bibitem{b5} 'GitHub repository', accessed 21 May 2024, available at: \url{https://github.com/simonnyman/CE-Lab24_Gr5}
 \bibitem{b6} 'Brightspace Course Material', accessed 21 May 2024
 \bibitem{b7} 'ROS Tutorials', accessed 23 May, available at: \url{https://wiki.ros.org/ROS/Tutorials}
-\bibitem{b8} 'LV-Max Sonar-sensor., accessed 23 May 2024 available at: https://maxbotix.com/pages/lv-maxsonar-ez-datasheet
+\bibitem{b8} 'LV-Max Sonar-sensor', accessed 23 May 2024, available at: \url{https://maxbotix.com/pages/lv-maxsonar-ez-datasheet}
 \end{thebibliography}
 
 \end{document}
