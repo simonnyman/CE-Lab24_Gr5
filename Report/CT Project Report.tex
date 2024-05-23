@@ -107,8 +107,13 @@ This happens through a loop that runs continually until a desired duration is re
 
 \subsection{LiDAR}
 The use of LiDAR readings is an integral part of the design, as the entire navigational logic depends upon these.
-In our implementation it had two use cases, one being the ability to read in which direction the nearest obstacle was present, if any, and the second being the ability to read the specific distance to said obstacle, which would determine what to do next.
+Before working with the LiDAR, we familiarized ourselfs working with a radar systems, by using a LV-MaxSonar®-EZ™ Series\cite{b8}.
+The Sonar sensor had the ability to read distances to objects, but as it was stationary it could only look in one direction.
+By working with the sensor we figured out how to convert the data from the sonar into a distance measurment, and from there make the robot autonomously take action.
+We then added a few ekstra sonsar senors, giving the robot the capability of registering objects in multiple directions, and thereby imitate how the LiDAR would be working. 
+This prepared us for working with the more complex LiDAR, and we acquired experience using the see-think-act cycle\href{sec:STAC}{Fig. 1}.  
 
+In our implementation the LiDAR had two use cases, one being the ability to read in which direction the nearest obstacle was present, if any, and the second being the ability to read the specific distance to said obstacle, which would determine what to do next.
 As the LiDAR provides a 360 degree scan, we first had to figure out which angles to use and how these were organized within the data provided by the LiDAR.
 By firstly playing around with the angles, we figured out that they were organized in a way such that 0$^\circ$ was at the back of the robot, and then continued clockwise around the robot.
 This meant that the front 180$^\circ$ were located in the interval $[90:270]$. How this was used in our final implementation will be elaborated on in the \textit{Navigation} section.
@@ -400,6 +405,8 @@ The same is true for the design of the figures used, along with the gathering of
 \bibitem{b4} 'Using the I2C Bus', accessed 17 May 2024, available at: \url{https://www.robot-electronics.co.uk/i2c-tutorial}
 \bibitem{b5} 'GitHub repository', accessed 21 May 2024, available at: \url{https://github.com/simonnyman/CE-Lab24_Gr5}
 \bibitem{b6} 'Brightspace Course Material', accessed 21 May 2024
+
+\bibitem{b8} 'https://maxbotix.com/pages/lv-maxsonar-ez-datasheet', accessed 23 May 2024
 \end{thebibliography}
 
 \end{document}
